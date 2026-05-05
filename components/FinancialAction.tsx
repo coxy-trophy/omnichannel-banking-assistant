@@ -1,21 +1,48 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
-import { ArrowLeft, Wallet, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Wallet, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import { processTransaction } from '@/app/actions';
 
-export default function FinancialActionPage({ type }: { type: 'deposit' | 'withdraw' }) {
+interface FinancialActionPageProps {
+  type: 'deposit' | 'withdraw';
+  balance: number;
+}
+
+export default function FinancialActionPage({ type, balance }: FinancialActionPageProps) {
   const [amount, setAmount] = useState('');
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'failed'>('idle');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setStatus('processing');
-    setTimeout(() => {
+
+    const amountNum = parseFloat(amount);
+    if (isNaN(amountNum) || amountNum <= 0) {
+      setError('Please enter a valid amount');
+      setStatus('failed');
+      return;
+    }
+
+    if (type === 'withdraw' && amountNum > balance) {
+      setError('Insufficient funds');
+      setStatus('failed');
+      return;
+    }
+
+    const result = await processTransaction(type, amountNum);
+
+    if (result.success) {
       setStatus('success');
-    }, 1500);
+    } else {
+      setError(result.error || 'Transaction failed');
+      setStatus('failed');
+    }
   };
 
   if (status === 'success') {
@@ -57,18 +84,19 @@ export default function FinancialActionPage({ type }: { type: 'deposit' | 'withd
               </div>
               <div>
                 <p className="text-[10px] text-outline font-black uppercase tracking-widest">Available Liquidity</p>
-                <p className="text-2xl font-manrope font-bold text-primary tracking-tighter">GH₵ 4,250.00</p>
+                <p className="text-2xl font-manrope font-bold text-primary tracking-tighter">GH₵ {balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-outline ml-1">Transfer Amount (GH₵)</label>
               <div className="relative group">
-                 <input 
-                  type="number" 
+                 <input
+                  type="number"
                   required
                   step="0.01"
                   min="1"
+                  max={type === 'withdraw' ? balance : undefined}
                   className="w-full px-6 h-20 rounded-2xl border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none text-3xl font-manrope font-black text-center transition-all bg-surface-container-lowest"
                   placeholder="0.00"
                   value={amount}
@@ -76,6 +104,13 @@ export default function FinancialActionPage({ type }: { type: 'deposit' | 'withd
                 />
               </div>
             </div>
+
+            {error && (
+              <div className="flex items-center gap-2 text-error bg-error/10 p-3 rounded-xl">
+                <AlertCircle className="w-5 h-5" />
+                <span className="font-bold text-sm">{error}</span>
+              </div>
+            )}
 
             <Button type="submit" className="w-full h-16 text-lg shadow-lg shadow-primary/20" disabled={status === 'processing'}>
               {status === 'processing' ? 'Authorizing...' : `Authorize ${type}`}

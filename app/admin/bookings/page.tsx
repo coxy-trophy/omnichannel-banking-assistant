@@ -2,9 +2,10 @@ import React from 'react';
 export const dynamic = 'force-dynamic';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Calendar, CheckCircle2, Clock, User, MapPin, Search } from 'lucide-react';
+import { Calendar, Clock, User, MapPin, Search } from 'lucide-react';
 import Link from 'next/link';
 import { getAllBookings } from '@/lib/adminActions';
+import { BookingActions } from '@/components/admin/BookingActions';
 
 export default async function AdminBookingsPage() {
   const bookings = await getAllBookings();
@@ -26,8 +27,8 @@ export default async function AdminBookingsPage() {
       <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-between items-center">
          <div className="relative w-full max-w-md group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-outline w-4 h-4 group-focus-within:text-primary transition-colors" />
-            <input 
-              className="w-full pl-11 pr-4 h-12 rounded-xl border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all text-xs font-medium bg-surface-container-lowest" 
+            <input
+              className="w-full pl-11 pr-4 h-12 rounded-xl border border-outline-variant focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all text-xs font-medium bg-surface-container-lowest"
               placeholder="Search by customer, code, or branch..."
             />
          </div>
@@ -85,7 +86,7 @@ export default async function AdminBookingsPage() {
                     </div>
                   </td>
                   <td className="p-5 text-right">
-                    <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-2 items-center">
                        <span className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest mr-2 flex items-center ${
                          bk.status === 'upcoming' ? 'bg-primary/10 text-primary border border-primary/20' :
                          bk.status === 'checked_in' ? 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant border border-tertiary-fixed-dim/30' :
@@ -94,7 +95,7 @@ export default async function AdminBookingsPage() {
                        }`}>
                          {bk.status}
                        </span>
-                       <Button variant="outline" className="px-3 py-1.5 text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Action</Button>
+                       <BookingActions bookingId={bk.id} currentStatus={bk.status} />
                     </div>
                   </td>
                 </tr>

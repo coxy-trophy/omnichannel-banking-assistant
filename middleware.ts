@@ -3,17 +3,17 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  
+
   const isDashboard = path.startsWith('/dashboard');
   const isBooking = path.startsWith('/booking');
   const isKyc = path.startsWith('/kyc');
   const isComplaints = path.startsWith('/complaints');
   const isFinancial = path.startsWith('/deposit') || path.startsWith('/withdraw');
   const isAdmin = path.startsWith('/admin');
-  
-  const authToken = request.cookies.get('auth_token')?.value;
 
-  if ((isDashboard || isBooking || isKyc || isComplaints || isFinancial) && !authToken) {
+  const sessionId = request.cookies.get('session_id')?.value;
+
+  if ((isDashboard || isBooking || isKyc || isComplaints || isFinancial) && !sessionId) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -29,12 +29,12 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/dashboard/:path*', 
-    '/admin/:path*', 
-    '/booking/:path*', 
-    '/kyc/:path*', 
+    '/dashboard/:path*',
+    '/admin/:path*',
+    '/booking/:path*',
+    '/kyc/:path*',
     '/complaints/:path*',
     '/deposit/:path*',
-    '/withdraw/:path*'
+    '/withdraw/:path*',
   ],
 };

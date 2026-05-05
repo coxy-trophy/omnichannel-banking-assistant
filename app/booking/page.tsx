@@ -1,24 +1,104 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { CheckCircle2, MapPin, Calendar, Clock, ChevronRight, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import { getServices, getBranches, createBooking } from './actions';
 
 const STEPS = ['Service', 'Branch', 'Time', 'Confirm'];
 
+// Available time slots (these could be fetched from a schedule table)
+const TIME_SLOTS = [
+  { label: '08:30 AM', value: 8.5 },
+  { label: '11:00 AM', value: 11 },
+  { label: '01:45 PM', value: 13.75 },
+  { label: '03:30 PM', value: 15.5 },
+];
+
+interface Service {
+  id: string;
+  name: string;
+  description: string | null;
+  estimatedTime: number;
+}
+
+interface Branch {
+  id: string;
+  name: string;
+  location: string | null;
+}
+
 export default function BookingPage() {
   const [step, setStep] = useState(0);
+  const [services, setServices] = useState<Service[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [bookingData, setBookingData] = useState({
-    service: '',
-    branch: '',
+    serviceId: '',
+    serviceName: '',
+    branchId: '',
+    branchName: '',
     time: '',
-    confirmed: false
+    confirmed: false,
+    checkinCode: '',
   });
+
+  useEffect(() => {
+    async function fetchData() {
+      const [servicesData, branchesData] = await Promise.all([
+        getServices(),
+        getBranches(),
+      ]);
+      setServices(servicesData as Service[]);
+      setBranches(branchesData as Branch[]);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   const nextStep = () => setStep(s => s + 1);
   const prevStep = () => setStep(s => s - 1);
+
+  const handleConfirm = async () => {
+    setSubmitting(true);
+
+    // Calculate timeslot date (next available slot today or tomorrow)
+    const now = new Date();
+    const timeValue = TIME_SLOTS.find(t => t.label === bookingData.time)?.value || 8.5;
+    const timeslot = new Date(now);
+    timeslot.setHours(Math.floor(timeValue), (timeValue % 1) * 60, 0, 0);
+
+    // If the time has passed today, schedule for tomorrow
+    if (timeslot <= now) {
+      timeslot.setDate(timeslot.getDate() + 1);
+    }
+
+    const result = await createBooking({
+      serviceId: bookingData.serviceId,
+      branchId: bookingData.branchId,
+      timeslot,
+    });
+
+    if (result.success) {
+      setBookingData({ ...bookingData, confirmed: true, checkinCode: result.checkinCode || '' });
+    }
+
+    setSubmitting(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-6 text-on-background">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-on-surface-variant">Loading booking options...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (bookingData.confirmed) {
     return (
@@ -29,7 +109,7 @@ export default function BookingPage() {
           </div>
           <h1 className="font-manrope text-3xl font-bold mb-2 text-primary">Booking Confirmed!</h1>
           <p className="text-on-surface-variant mb-8 font-medium">
-            Your institutional check-in code is <span className="font-mono font-bold text-primary text-xl tracking-tighter">TB-{Math.random().toString(36).substring(7).toUpperCase()}</span>
+            Your institutional check-in code is <span className="font-mono font-bold text-primary text-xl tracking-tighter">{bookingData.checkinCode}</span>
           </p>
           <Link href="/dashboard">
             <Button className="w-full h-14">Return to Dashboard</Button>
@@ -64,14 +144,20 @@ export default function BookingPage() {
             {step === 0 && (
               <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
                 <h2 className="text-xl font-bold mb-6">What service do you require?</h2>
-                {['Institutional Consultation', 'Account Forensics', 'Wealth Management', 'Credit Facility Review'].map(s => (
-                  <button 
-                    key={s}
-                    onClick={() => { setBookingData({...bookingData, service: s}); nextStep(); }}
+                {services.map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => { setBookingData({...bookingData, serviceId: s.id, serviceName: s.name}); nextStep(); }}
                     className="w-full text-left p-5 rounded-2xl border border-outline-variant/50 hover:border-primary hover:bg-primary/5 transition-all flex justify-between items-center group shadow-sm bg-surface-container-lowest"
                   >
-                    <span className="font-bold text-on-surface group-hover:text-primary">{s}</span>
-                    <ChevronRight className="w-5 h-5 text-outline-variant group-hover:text-primary transition-transform group-hover:translate-x-1" />
+                    <div>
+                      <span className="font-bold text-on-surface group-hover:text-primary">{s.name}</span>
+                      {s.description && <p className="text-xs text-on-surface-variant mt-1">{s.description}</p>}
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs text-on-surface-variant">{s.estimatedTime} min</span>
+                      <ChevronRight className="w-5 h-5 text-outline-variant group-hover:text-primary transition-transform group-hover:translate-x-1 ml-2" />
+                    </div>
                   </button>
                 ))}
               </div>
@@ -82,13 +168,16 @@ export default function BookingPage() {
                 <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-primary" /> Select Branch
                 </h2>
-                {['Accra Central Hub', 'Kumasi Regional Center', 'Takoradi Port Branch'].map(b => (
-                  <button 
-                    key={b}
-                    onClick={() => { setBookingData({...bookingData, branch: b}); nextStep(); }}
+                {branches.map(b => (
+                  <button
+                    key={b.id}
+                    onClick={() => { setBookingData({...bookingData, branchId: b.id, branchName: b.name}); nextStep(); }}
                     className="w-full text-left p-5 rounded-2xl border border-outline-variant/50 hover:border-primary hover:bg-primary/5 transition-all flex justify-between items-center group shadow-sm bg-surface-container-lowest"
                   >
-                    <span className="font-bold text-on-surface group-hover:text-primary">{b}</span>
+                    <div>
+                      <span className="font-bold text-on-surface group-hover:text-primary">{b.name}</span>
+                      {b.location && <p className="text-xs text-on-surface-variant mt-1">{b.location}</p>}
+                    </div>
                     <ChevronRight className="w-5 h-5 text-outline-variant group-hover:text-primary" />
                   </button>
                 ))}
@@ -101,13 +190,13 @@ export default function BookingPage() {
                   <Calendar className="w-5 h-5 text-primary" /> Available Slots
                 </h2>
                 <div className="grid grid-cols-2 gap-4">
-                  {['08:30 AM', '11:00 AM', '01:45 PM', '03:30 PM'].map(t => (
-                    <button 
-                      key={t}
-                      onClick={() => { setBookingData({...bookingData, time: t}); nextStep(); }}
+                  {TIME_SLOTS.map(t => (
+                    <button
+                      key={t.label}
+                      onClick={() => { setBookingData({...bookingData, time: t.label}); nextStep(); }}
                       className="p-5 rounded-2xl border border-outline-variant/50 hover:border-primary hover:bg-primary/5 transition-all text-center font-bold shadow-sm bg-surface-container-lowest"
                     >
-                      {t}
+                      {t.label}
                     </button>
                   ))}
                 </div>
@@ -120,12 +209,12 @@ export default function BookingPage() {
                 <div className="bg-surface-container-low rounded-2xl p-6 space-y-4 border border-outline-variant/30">
                   <div className="flex justify-between items-center">
                     <span className="text-xs uppercase font-bold text-on-surface-variant tracking-widest">Service</span>
-                    <span className="font-bold text-primary">{bookingData.service}</span>
+                    <span className="font-bold text-primary">{bookingData.serviceName}</span>
                   </div>
                   <div className="h-px bg-outline-variant/30 w-full" />
                   <div className="flex justify-between items-center">
-                    <span className="text-xs uppercase font-bold text-on-surface-variant tracking-widest">Institution</span>
-                    <span className="font-bold text-primary">{bookingData.branch}</span>
+                    <span className="text-xs uppercase font-bold text-on-surface-variant tracking-widest">Branch</span>
+                    <span className="font-bold text-primary">{bookingData.branchName}</span>
                   </div>
                   <div className="h-px bg-outline-variant/30 w-full" />
                   <div className="flex justify-between items-center">
@@ -133,11 +222,12 @@ export default function BookingPage() {
                     <span className="font-bold text-primary">{bookingData.time}</span>
                   </div>
                 </div>
-                <Button 
-                  className="w-full h-14 text-lg shadow-lg shadow-primary/20" 
-                  onClick={() => setBookingData({...bookingData, confirmed: true})}
+                <Button
+                  className="w-full h-14 text-lg shadow-lg shadow-primary/20"
+                  onClick={handleConfirm}
+                  disabled={submitting}
                 >
-                  Confirm Appointment
+                  {submitting ? 'Confirming...' : 'Confirm Appointment'}
                 </Button>
               </div>
             )}

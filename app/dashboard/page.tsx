@@ -3,44 +3,65 @@ export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, Plus, Minus } from 'lucide-react';
-import { cookies } from 'next/headers';
+import { ArrowUpRight, ArrowDownLeft, Clock, Plus, Minus, Smartphone } from 'lucide-react';
 import { getUserBalance } from '@/lib/adminActions';
 import { db } from '@/db';
-import { transactions, bookings } from '@/db/schema';
+import { transactions, bookings, users } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
+import { getSession, signOut } from '@/app/actions';
+import { redirect } from 'next/navigation';
+import { SignOutButton } from './SignOutButton';
+
+// Daily limits based on role
+const DAILY_LIMITS: Record<string, number> = {
+  user: 5000,
+  admin: 100000,
+};
 
 export default async function UserDashboard() {
-  const userId = (await cookies()).get('user_id')?.value;
-  
-  if (!userId) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-on-background">
-        <Card className="max-w-md w-full text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">Session Expired</h1>
-          <p className="text-on-surface-variant mb-8">Please log in to access your dashboard.</p>
-          <Link href="/login"><Button className="w-full">Sign In</Button></Link>
-        </Card>
-      </div>
-    );
+  const session = await getSession();
+
+  if (!session.data?.user) {
+    redirect('/login');
+  }
+
+  const userId = session.data.user.id;
+
+  // Fetch user data for real-time values
+  const userData = await db.query.users.findFirst({
+    where: eq(users.id, userId),
+  });
+
+  if (!userData) {
+    redirect('/login');
   }
 
   const balance = await getUserBalance(userId);
-  
+  const dailyLimit = DAILY_LIMITS[userData.role] || DAILY_LIMITS.user;
+  const tierName = userData.role === 'admin' ? 'Premium Tier' : 'Standard Tier';
+
+  // KYC status styling
+  const kycStatusConfig: Record<string, { bg: string; text: string }> = {
+    pending: { bg: 'bg-tertiary-fixed/30', text: 'text-on-tertiary-fixed-variant' },
+    verified: { bg: 'bg-on-success-mint/30', text: 'text-on-success-mint' },
+    rejected: { bg: 'bg-error/30', text: 'text-error' },
+  };
+  const kycStyle = kycStatusConfig[userData.kycStatus] || kycStatusConfig.pending;
+
   const rawTransactions = await db.query.transactions.findMany({
     where: eq(transactions.userId, userId),
     orderBy: [desc(transactions.createdAt)],
-    limit: 5
+    limit: 5,
   });
 
   const rawBookings = await db.query.bookings.findMany({
     where: eq(bookings.userId, userId),
     with: {
       service: true,
-      branch: true
+      branch: true,
     } as any,
     orderBy: [desc(bookings.createdAt)],
-    limit: 1
+    limit: 1,
   });
 
   // Serialize data to plain objects for client components
@@ -49,15 +70,15 @@ export default async function UserDashboard() {
     type: tx.type,
     amount: tx.amount,
     status: tx.status,
-    createdAt: tx.createdAt.toISOString()
+    createdAt: tx.createdAt instanceof Date ? tx.createdAt.toISOString() : tx.createdAt,
   }));
 
   const activeBookings = (rawBookings as any[]).map(bk => ({
     id: bk.id,
     service: bk.service ? { name: bk.service.name } : null,
     branch: bk.branch ? { name: bk.branch.name } : null,
-    timeslot: bk.timeslot.toISOString(),
-    checkinCode: bk.checkinCode
+    timeslot: bk.timeslot instanceof Date ? bk.timeslot.toISOString() : bk.timeslot,
+    checkinCode: bk.checkinCode,
   }));
 
   return (
@@ -68,10 +89,8 @@ export default async function UserDashboard() {
           TrustBank
         </h1>
         <div className="flex items-center gap-4">
-          <span className="text-sm font-bold bg-primary/5 text-primary px-3 py-1 rounded-full hidden sm:block">Standard Tier</span>
-          <Link href="/login">
-            <Button variant="outline" className="px-3 py-1 text-sm">Sign Out</Button>
-          </Link>
+          <span className="text-sm font-bold bg-primary/5 text-primary px-3 py-1 rounded-full hidden sm:block">{tierName}</span>
+          <SignOutButton />
         </div>
       </header>
 
@@ -85,6 +104,11 @@ export default async function UserDashboard() {
                 <Link href="/deposit">
                   <Button variant="secondary" className="gap-2 px-6">
                     <Plus className="w-4 h-4" /> Deposit
+                  </Button>
+                </Link>
+                <Link href="/momo">
+                  <Button variant="secondary" className="gap-2 px-6 bg-white/20 hover:bg-white/30 border-white/30">
+                    <Smartphone className="w-4 h-4" /> MoMo
                   </Button>
                 </Link>
                 <Link href="/withdraw">
@@ -104,21 +128,30 @@ export default async function UserDashboard() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-on-surface-variant">Daily Limit</span>
-                  <span className="font-bold">GH₵ 5,000.00</span>
+                  <span className="font-bold">GH₵ {dailyLimit.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-on-surface-variant">KYC Status</span>
-                  <span className="bg-tertiary-fixed/30 text-on-tertiary-fixed-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter">
-                    Pending
+                  <span className={`${kycStyle.bg} ${kycStyle.text} px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter`}>
+                    {userData.kycStatus}
                   </span>
                 </div>
               </div>
             </div>
-            <Link href="/booking">
-              <Button className="w-full mt-6 gap-2">
-                <Clock className="w-4 h-4" /> Book Appointment
-              </Button>
-            </Link>
+            <div className="space-y-3">
+              <Link href="/booking">
+                <Button className="w-full gap-2">
+                  <Clock className="w-4 h-4" /> Book Appointment
+                </Button>
+              </Link>
+              {userData.kycStatus !== 'verified' && (
+                <Link href="/kyc">
+                  <Button variant="outline" className="w-full gap-2">
+                    Complete KYC Verification
+                  </Button>
+                </Link>
+              )}
+            </div>
           </Card>
         </section>
 
@@ -132,13 +165,13 @@ export default async function UserDashboard() {
               <Card className="p-0 overflow-hidden border-outline-variant/30">
                 <div className="divide-y divide-outline-variant/30">
                   {userTransactions.length > 0 ? userTransactions.map((tx) => (
-                    <TransactionRow 
+                    <TransactionRow
                       key={tx.id}
-                      icon={tx.type === 'deposit' || tx.type === 'momo' ? <ArrowUpRight className="text-on-success-mint" /> : <ArrowDownLeft className="text-error" />} 
-                      title={tx.type === 'deposit' ? 'Internal Deposit' : tx.type === 'withdraw' ? 'Branch Withdrawal' : 'MoMo Transfer'} 
-                      date={new Date(tx.createdAt).toLocaleDateString()} 
-                      amount={`${tx.type === 'withdraw' ? '-' : '+'}${tx.amount}.00`} 
-                      status={tx.status} 
+                      icon={tx.type === 'deposit' || tx.type === 'momo' ? <ArrowUpRight className="text-on-success-mint" /> : <ArrowDownLeft className="text-error" />}
+                      title={tx.type === 'deposit' ? 'Internal Deposit' : tx.type === 'withdraw' ? 'Branch Withdrawal' : 'MoMo Transfer'}
+                      date={new Date(tx.createdAt).toLocaleDateString()}
+                      amount={`${tx.type === 'withdraw' ? '-' : '+'}${tx.amount}.00`}
+                      status={tx.status}
                     />
                   )) : (
                     <div className="p-12 text-center text-outline italic">No recent transactions recorded</div>

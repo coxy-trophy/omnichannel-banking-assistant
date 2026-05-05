@@ -2,9 +2,13 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { ArrowRight, CreditCard, Landmark, Wallet, ShieldAlert, Globe, Zap, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Landmark, Wallet, Globe, Zap, ShieldCheck, LayoutDashboard } from 'lucide-react';
+import { getSession } from '@/app/actions';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getSession();
+  const isLoggedIn = !!session.data?.user;
+
   return (
     <div className="min-h-screen bg-background flex flex-col font-inter text-on-background">
       <header className="bg-surface-container-lowest border-b border-outline-variant px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md bg-white/80 shadow-sm">
@@ -13,12 +17,24 @@ export default function HomePage() {
            <h1 className="font-manrope font-black text-2xl text-primary tracking-tighter">TrustBank</h1>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/login">
-            <Button variant="outline" className="border-none hover:bg-primary/5 text-primary">Log In</Button>
-          </Link>
-          <Link href="/register">
-            <Button variant="primary" className="px-6 shadow-lg shadow-primary/20 rounded-xl">Register Account</Button>
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link href="/dashboard">
+                <Button variant="outline" className="border-none hover:bg-primary/5 text-primary gap-2">
+                  <LayoutDashboard className="w-4 h-4" /> Return to Dashboard
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/login">
+                <Button variant="outline" className="border-none hover:bg-primary/5 text-primary">Log In</Button>
+              </Link>
+              <Link href="/register">
+                <Button variant="primary" className="px-6 shadow-lg shadow-primary/20 rounded-xl">Register Account</Button>
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
@@ -37,9 +53,9 @@ export default function HomePage() {
               Experience zero-latency institutional banking. From real-time ledger management to AI-driven forensics, we are your financial anchor.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-               <Link href="/register">
+               <Link href={isLoggedIn ? "/dashboard" : "/register"}>
                  <Button className="h-16 px-10 text-lg gap-3 shadow-2xl shadow-primary/30 group">
-                    Begin Onboarding <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                    {isLoggedIn ? 'Go to Dashboard' : 'Begin Onboarding'} <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                  </Button>
                </Link>
                <Link href="/booking">
@@ -49,7 +65,7 @@ export default function HomePage() {
                </Link>
             </div>
           </div>
-          
+
           <div className="relative animate-in fade-in zoom-in-95 duration-1000 delay-200">
              <Card className="bg-primary aspect-video rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,30,64,0.3)] border-none p-10 flex flex-col justify-between group overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)]" />
@@ -84,24 +100,24 @@ export default function HomePage() {
                <h3 className="font-manrope text-3xl md:text-4xl font-black text-primary tracking-tight">Enterprise Infrastructure</h3>
                <p className="text-on-surface-variant max-w-2xl mx-auto font-medium">Engineered for absolute reliability in high-stakes financial environments.</p>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <FeatureCard 
+              <FeatureCard
                 icon={<ShieldCheck className="text-primary" />}
                 title="Forensic Security"
                 desc="Quantum-resistant ledger encryption for every institutional transaction."
               />
-              <FeatureCard 
+              <FeatureCard
                 icon={<Zap className="text-surface-tint" />}
                 title="Instant Settlement"
                 desc="Real-time GH₵ liquidity movements via our proprietary MoMo bridge."
               />
-              <FeatureCard 
+              <FeatureCard
                 icon={<Landmark className="text-secondary" />}
                 title="Branch Synergy"
                 desc="Seamless transition between digital interfaces and physical institutional hubs."
               />
-              <FeatureCard 
+              <FeatureCard
                 icon={<Wallet className="text-on-success-mint" />}
                 title="Asset Custody"
                 desc="Comprehensive oversight of your entire institutional wealth portfolio."

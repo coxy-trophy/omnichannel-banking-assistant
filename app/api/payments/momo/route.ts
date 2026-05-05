@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { transactions } from '@/db/schema';
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 
 export async function POST(request: Request) {
   try {
@@ -10,11 +11,13 @@ export async function POST(request: Request) {
     const status = isSuccess ? 'success' : 'failed';
 
     const [newTransaction] = await db.insert(transactions).values({
+      id: randomUUID(),
       userId,
       amount,
       currency: 'GHS',
       type: 'momo',
-      status
+      status,
+      createdAt: new Date()
     }).returning();
 
     return NextResponse.json({ 

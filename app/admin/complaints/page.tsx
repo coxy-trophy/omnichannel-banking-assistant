@@ -4,10 +4,14 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { MessageSquare, Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
-import { getRecentInquiries } from '@/lib/adminActions';
+import { getRecentInquiries, getComplaintStats } from '@/lib/adminActions';
+import { ComplaintActions } from '@/components/admin/ComplaintActions';
 
 export default async function AdminComplaintsPage() {
-  const inquiries = await getRecentInquiries();
+  const [inquiries, complaintStats] = await Promise.all([
+    getRecentInquiries(),
+    getComplaintStats()
+  ]);
 
   return (
     <div className="min-h-screen bg-background p-8 font-inter text-on-background">
@@ -25,8 +29,8 @@ export default async function AdminComplaintsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <StatSmallCard icon={<Clock className="text-tertiary" />} label="Response SLO" value="&lt; 15m" />
-        <StatSmallCard icon={<CheckCircle2 className="text-on-success-mint" />} label="Resolved 24h" value="34" />
-        <StatSmallCard icon={<AlertTriangle className="text-error" />} label="High Priority" value="2" />
+        <StatSmallCard icon={<CheckCircle2 className="text-on-success-mint" />} label="Resolved 24h" value={complaintStats.resolved24h.toString()} />
+        <StatSmallCard icon={<AlertTriangle className="text-error" />} label="High Priority" value={complaintStats.highPriority.toString()} />
       </div>
 
       <Card className="p-0 overflow-hidden border-outline-variant/30 shadow-xl">
@@ -53,7 +57,7 @@ export default async function AdminComplaintsPage() {
                     </span>
                   </td>
                   <td className="p-5 text-right">
-                    <Button variant="primary" className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest">Open Thread</Button>
+                    <ComplaintActions complaintId={iq.id} status={iq.status} />
                   </td>
                 </tr>
               )) : (

@@ -26,9 +26,11 @@ import { getAdminStats, getRecentInquiries } from '@/lib/adminActions';
 import { generateFakeReports } from '@/lib/reportGenerator';
 
 export default async function AdminDashboard() {
-  const stats = await getAdminStats();
-  const inquiries = await getRecentInquiries();
-  const reports = generateFakeReports();
+  const [stats, inquiries, reports] = await Promise.all([
+    getAdminStats(),
+    getRecentInquiries(),
+    generateFakeReports()
+  ]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-background font-inter text-on-background">
@@ -181,9 +183,9 @@ export default async function AdminDashboard() {
                       </div>
                    </div>
                    <div className="space-y-3 pt-4 border-t border-outline-variant/30">
-                      <UsageItem color="bg-primary" label="Mobile Application" percent={`${reports.atmVsBranchUsage.app}%`} />
-                      <UsageItem color="bg-primary-container" label="ATM Terminals" percent={`${reports.atmVsBranchUsage.atm}%`} />
-                      <UsageItem color="bg-surface-tint" label="In-Branch" percent={`${reports.atmVsBranchUsage.branch}%`} />
+                      <UsageItem color="bg-primary" label="MoMo Transfers" percent={`${reports.atmVsBranchUsage.app}%`} />
+                      <UsageItem color="bg-primary-container" label="Withdrawals" percent={`${reports.atmVsBranchUsage.atm}%`} />
+                      <UsageItem color="bg-surface-tint" label="Branch Deposits" percent={`${reports.atmVsBranchUsage.branch}%`} />
                    </div>
                 </div>
               </Card>

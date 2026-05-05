@@ -2,19 +2,19 @@
 
 import { db } from '@/db';
 import { users, bookings, transactions, complaints } from '@/db/schema';
-import { count, eq, sql, and, gte, sum } from 'drizzle-orm';
+import { count, eq, sql, and, gte, sum, desc } from 'drizzle-orm';
 
 export async function getAdminStats() {
   try {
     const [totalUsers] = await db.select({ value: count() }).from(users);
     const [pendingKyc] = await db.select({ value: count() }).from(users).where(eq(users.kycStatus, 'pending'));
-    
-    const todayISO = new Date();
-    todayISO.setHours(0, 0, 0, 0);
-    
+
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
     const [todayBookings] = await db.select({ value: count() })
       .from(bookings)
-      .where(gte(bookings.createdAt, sql`${todayISO.toISOString()}::timestamp`));
+      .where(gte(bookings.createdAt, todayStart));
 
     const [totalVolumeResult] = await db.select({ value: sum(transactions.amount) })
       .from(transactions)
@@ -47,7 +47,7 @@ export async function getPendingKYC() {
   try {
     return await db.query.users.findMany({
       where: eq(users.kycStatus, 'pending'),
-      orderBy: (users, { desc }) => [desc(users.createdAt)]
+      orderBy: [desc(users.createdAt)],
     });
   } catch (error) {
     return [];
@@ -57,7 +57,7 @@ export async function getPendingKYC() {
 export async function getAllUsers() {
   try {
     return await db.query.users.findMany({
-      orderBy: (users, { desc }) => [desc(users.createdAt)]
+      orderBy: [desc(users.createdAt)],
     });
   } catch (error) {
     return [];
@@ -72,7 +72,7 @@ export async function getAllBookings() {
         service: true,
         branch: true
       } as any,
-      orderBy: (bookings, { desc }) => [desc(bookings.timeslot)]
+      orderBy: [desc(bookings.timeslot)],
     });
   } catch (error) {
     return [];
@@ -95,8 +95,8 @@ export async function getRecentInquiries() {
     return await db.query.complaints.findMany({
       with: {
         user: true
-      },
-      orderBy: (complaints, { desc }) => [desc(complaints.createdAt)],
+      } as any,
+      orderBy: [desc(complaints.createdAt)],
       limit: 10
     });
   } catch (error) {
@@ -104,10 +104,41 @@ export async function getRecentInquiries() {
   }
 }
 
+export async function getComplaintStats() {
+  try {
+    const now = new Date();
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    // Resolved in last 24h
+    const [resolved24h] = await db.select({ value: count() })
+      .from(complaints)
+      .where(and(
+        eq(complaints.status, 'resolved'),
+        gte(complaints.createdAt, twentyFourHoursAgo)
+      ));
+
+    // High priority (open complaints)
+    const [openCount] = await db.select({ value: count() })
+      .from(complaints)
+      .where(eq(complaints.status, 'open'));
+
+    return {
+      resolved24h: Number(resolved24h?.value || 0),
+      highPriority: Number(openCount?.value || 0)
+    };
+  } catch (error) {
+    console.error('Complaint Stats Error:', error);
+    return {
+      resolved24h: 0,
+      highPriority: 0
+    };
+  }
+}
+
 export async function getUserBalance(userId: string) {
   try {
     const result = await db.select({
-      balance: sql<string>`
+      balance: sql<number>`
         COALESCE(SUM(CASE WHEN type IN ('deposit', 'momo') THEN amount ELSE -amount END), 0)
       `
     }).from(transactions).where(and(eq(transactions.userId, userId), eq(transactions.status, 'success')));
@@ -116,5 +147,41 @@ export async function getUserBalance(userId: string) {
   } catch (error) {
     console.error('Balance Calculation Error:', error);
     return 0;
+  }
+}
+
+export async function verifyKyc(userId: string) {
+  try {
+    await db.update(users)
+      .set({ kycStatus: 'verified' })
+      .where(eq(users.id, userId));
+    return { success: true };
+  } catch (error) {
+    console.error('KYC Verification Error:', error);
+    return { error: 'Failed to verify KYC' };
+  }
+}
+
+export async function rejectKyc(userId: string) {
+  try {
+    await db.update(users)
+      .set({ kycStatus: 'rejected' })
+      .where(eq(users.id, userId));
+    return { success: true };
+  } catch (error) {
+    console.error('KYC Rejection Error:', error);
+    return { error: 'Failed to reject KYC' };
+  }
+}
+
+export async function resolveComplaint(complaintId: string) {
+  try {
+    await db.update(complaints)
+      .set({ status: 'resolved' })
+      .where(eq(complaints.id, complaintId));
+    return { success: true };
+  } catch (error) {
+    console.error('Complaint Resolution Error:', error);
+    return { error: 'Failed to resolve complaint' };
   }
 }

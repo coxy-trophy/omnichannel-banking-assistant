@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { UserCheck } from 'lucide-react';
 import Link from 'next/link';
 import { getPendingKYC } from '@/lib/adminActions';
+import { KycActions } from '@/components/admin/KycActions';
 
 export default async function AdminKYCPage() {
   const pendingUsers = await getPendingKYC();
@@ -50,7 +51,7 @@ export default async function AdminKYCPage() {
                     </span>
                   </td>
                   <td className="p-5 text-right">
-                    <Button variant="primary" className="px-5 py-2 text-[10px] uppercase font-bold tracking-wider">Inspect Documents</Button>
+                    <KycActions userId={user.id} />
                   </td>
                 </tr>
               )) : (
