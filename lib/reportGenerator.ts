@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { bookings, transactions } from '@/db/schema';
-import { count, sql, gte } from 'drizzle-orm';
+import { count, sql } from 'drizzle-orm';
 
 export async function generateFakeReports() {
   try {

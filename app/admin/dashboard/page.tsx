@@ -2,15 +2,15 @@ import React from 'react';
 export const dynamic = 'force-dynamic';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { 
-  LayoutDashboard, 
+import {
+  LayoutDashboard,
   Calendar,
-  UserCheck, 
-  BarChart3, 
-  MessageSquare, 
-  Settings, 
-  Search, 
-  Bell, 
+  UserCheck,
+  BarChart3,
+  MessageSquare,
+  Settings,
+  Search,
+  Bell,
   UserCircle,
   Download,
   TrendingUp,
@@ -19,7 +19,9 @@ import {
   ChevronRight,
   MoreVertical,
   PieChart,
-  Activity
+  Activity,
+  FileSpreadsheet,
+  FileText
 } from 'lucide-react';
 import Link from 'next/link';
 import { getAdminStats, getRecentInquiries } from '@/lib/adminActions';
@@ -97,10 +99,18 @@ export default async function AdminDashboard() {
                 <p className="text-xs text-on-surface-variant font-medium">Real-time system health and service metrics.</p>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" className="gap-2 px-4 py-2 text-xs border-outline-variant shadow-sm">
-                  <Download size={14} />
-                  Institutional Report
-                </Button>
+                <a href="/api/reports/excel" download>
+                  <Button variant="outline" className="gap-2 px-4 py-2 text-xs border-outline-variant shadow-sm">
+                    <FileSpreadsheet size={14} />
+                    Excel
+                  </Button>
+                </a>
+                <a href="/api/reports/pdf" download>
+                  <Button className="gap-2 px-4 py-2 text-xs shadow-lg shadow-primary/20">
+                    <FileText size={14} />
+                    Bank Ledger PDF
+                  </Button>
+                </a>
               </div>
             </div>
 
