@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Complaints &amp; Support - TrustBank</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e0e3e5",
+                        "surface-tint": "#3a5f94",
+                        "tertiary-container": "#592300",
+                        "on-surface-variant": "#43474f",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdbca",
+                        "surface-dim": "#d8dadc",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#003366",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#1f477b",
+                        "primary": "#001e40",
+                        "on-secondary-container": "#5b675e",
+                        "background": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "on-primary-container": "#799dd6",
+                        "on-tertiary-fixed": "#341100",
+                        "on-tertiary-container": "#d8885c",
+                        "secondary": "#556158",
+                        "secondary-container": "#d9e6da",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-fixed-variant": "#723610",
+                        "tertiary": "#381300",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#737780",
+                        "primary-fixed-dim": "#a7c8ff",
+                        "on-background": "#191c1e",
+                        "secondary-fixed-dim": "#bdcabe",
+                        "on-secondary-fixed": "#131e17",
+                        "on-primary-fixed": "#001b3c",
+                        "surface-container": "#eceef0",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#d5e3ff",
+                        "outline-variant": "#c3c6d1",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-low": "#f2f4f6",
+                        "on-surface": "#191c1e",
+                        "secondary-fixed": "#d9e6da",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#a7c8ff",
+                        "on-secondary-fixed-variant": "#3e4a41",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-fixed-dim": "#ffb690",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "xs": "4px",
+                        "margin": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "24px",
+                        "2xl": "48px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope"],
+                        "button": ["Inter"],
+                        "h2": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "h3": ["Manrope"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "h1": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "button": ["15px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "h2": ["32px", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "h3": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-40 flex justify-between items-center w-full px-4 h-16 docked full-width top-0 border-b border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-200">
+<div class="flex items-center gap-lg">
+<span class="text-lg font-extrabold text-blue-900 dark:text-white font-h1 tracking-tight">TrustBank</span>
+<!-- Desktop Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex items-center gap-md ml-xl">
+<a class="font-button text-button text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 px-md py-sm rounded-lg transition-all duration-200" href="#">Home</a>
+<a class="font-button text-button text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 px-md py-sm rounded-lg transition-all duration-200" href="#">Services</a>
+<a class="font-button text-button text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 px-md py-sm rounded-lg transition-all duration-200" href="#">Bookings</a>
+<a class="font-button text-button text-blue-900 dark:text-blue-300 font-semibold px-md py-sm rounded-lg transition-all duration-200" href="#">Support</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<button class="p-sm rounded-full text-blue-900 dark:text-blue-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-sm rounded-full text-blue-900 dark:text-blue-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-[1280px] mx-auto p-md md:p-lg xl:p-xl pb-32">
+<!-- Header Section -->
+<div class="mb-xl">
+<h1 class="font-h2 text-h2 text-primary mb-xs">Support &amp; Complaints</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">We're here to help resolve your issues quickly and securely.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+<!-- Left Column: Submission Form (Spans 5 cols on lg) -->
+<section class="lg:col-span-5 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] p-lg lg:p-xl flex flex-col gap-lg">
+<div class="flex items-center gap-sm border-b border-surface-container-high pb-md">
+<span class="material-symbols-outlined text-primary">edit_document</span>
+<h2 class="font-h3 text-h3 text-on-surface">Submit a Ticket</h2>
+</div>
+<form class="flex flex-col gap-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="category">Issue Category</label>
+<select class="w-full bg-surface-bright border border-outline-variant rounded-lg p-md font-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 appearance-none" id="category">
+<option>Account Access</option>
+<option>Transaction Dispute</option>
+<option>Card Services</option>
+<option>General Inquiry</option>
+</select>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="subject">Subject</label>
+<input class="w-full bg-surface-bright border border-outline-variant rounded-lg p-md font-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200" id="subject" placeholder="Brief summary of the issue" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider" for="description">Description</label>
+<textarea class="w-full bg-surface-bright border border-outline-variant rounded-lg p-md font-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 resize-none" id="description" placeholder="Please provide details to help us investigate..." rows="5"></textarea>
+</div>
+<button class="mt-sm bg-primary text-on-primary font-button text-button h-[48px] rounded-full flex items-center justify-center gap-sm hover:scale-[1.02] active:scale-95 transition-transform duration-200 shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] hover:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.1)]" type="button">
+<span class="material-symbols-outlined fill">send</span>
+                        Submit Complaint
+                    </button>
+</form>
+</section>
+<!-- Right Column: Chat Interface (Spans 7 cols on lg) -->
+<section class="lg:col-span-7 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] flex flex-col h-[600px] overflow-hidden">
+<!-- Chat Header -->
+<div class="bg-surface-container-lowest border-b border-outline-variant p-md lg:p-lg flex items-center justify-between z-10 shadow-sm">
+<div class="flex items-center gap-md">
+<div class="relative w-12 h-12 rounded-full overflow-hidden border-2 border-surface-container-high shrink-0">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a friendly female customer support agent wearing a headset. She is sitting in a bright, modern corporate office environment with soft natural lighting. The color palette features clean whites, soft grays, and subtle hints of corporate blue, conveying trust and efficiency. The overall aesthetic is clean, polished, and approachable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtS4k4cLOq2iFKDiWm6meXG0t-i-SIduaW1Y8sKGYuBmYgp0xXGVWeVlnZSDlftqYD2C0ocUCdiQ3nQdiKNBSMxywt5NMcP3yFKgOOwRx77RB9XzNRue0_innD-NiP_DFutP879O3YLDFiwt-ezPi3l6q32hGMTpKyYj7sotwiXZyugRjJBSAjWim3UDmL_fIr0KGWPtL7Vd37HLXkEIqSy-GGEKy39Xbrzq5LeL_t5WZ7FyY4Sx3fVlX-p1cIZt3xaoeny9inpsI"/>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-secondary rounded-full border-2 border-white"></div>
+</div>
+<div class="flex flex-col">
+<h3 class="font-h3 text-h3 text-on-surface text-[20px]">Sarah Jenkins</h3>
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Online • Live Support</span>
+</div>
+</div>
+</div>
+<button class="p-sm text-outline hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Chat Messages Area -->
+<div class="flex-grow bg-surface-container p-md lg:p-lg overflow-y-auto flex flex-col gap-lg">
+<!-- Time Divider -->
+<div class="flex justify-center">
+<span class="font-label-caps text-label-caps text-on-surface-variant bg-surface-container-highest px-sm py-xs rounded-full">Today, 10:42 AM</span>
+</div>
+<!-- Agent Message -->
+<div class="flex gap-md max-w-[85%]">
+<div class="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-1 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A small circular avatar showing a professional female customer support agent smiling in a well-lit, modern office setting. The aesthetic is bright, clean, and corporate, emphasizing approachability and competence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQlRsCSOUu_KciO4DsIUrlb9q_4wwEMZsWnoFQyN1TuAh3dbz5y-VHeTACyl45E18UNmgBbcklMh_cMlMtCH-ftaOmQZ1FMKHwiA5arKDN5049lnORFeMs1i6ONUQOJfeQ81u6GakeqId2jf2-Em5F8ymRzCGqVdCdQGjj1ITnueSzr9HeZed1OsMBLHY3_x4a76y4zC4EDepUkDhBnrax4vCeS0xHFt75me8CxN8YGtOTBawDyE4E9yz83Cx_iIKx4jtC_wXCD-s"/>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-2xl rounded-tl-none p-md shadow-sm">
+<p class="font-body-md text-body-md text-on-surface">Hello! I see you're having trouble with a recent transaction. I'm reviewing your account details now. Could you confirm the date of the charge?</p>
+</div>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex justify-end max-w-[85%] self-end">
+<div class="flex flex-col gap-xs items-end">
+<div class="bg-primary-container text-on-primary-container rounded-2xl rounded-tr-none p-md shadow-sm">
+<p class="font-body-md text-body-md">Hi Sarah. Yes, it was on Tuesday. A charge for $142.50 that I don't recognize.</p>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant mr-1">Read 10:44 AM</span>
+</div>
+</div>
+<!-- Agent Message -->
+<div class="flex gap-md max-w-[85%]">
+<div class="w-8 h-8 rounded-full overflow-hidden shrink-0 mt-1 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A small circular avatar showing a professional female customer support agent smiling in a well-lit, modern office setting. The aesthetic is bright, clean, and corporate, emphasizing approachability and competence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAn_KEWQ1zHF4OXMzAErUV-qNyc273BOmcbd1mngtpccNiBKXp09ql02YhaWNCMgBDrJxA6s0y4m2lwxIExlj2dMUAwivTxNGk3dP1kAui5KcA9xtBFlklzVBRFf5IWwb8dHRfccYKBnMxmsUzersouysANLqQHK9gD1HJkK8o-pfYKZNpro_jmKGeLOJoRUvZ5xnGXvuhryPCDSRSqjjFWfF941fmw2E9uD-bDK1oKNOygL078HX6oTvB3rF0WFhGBRAgUXvGbidY"/>
+</div>
+<div class="flex flex-col gap-xs">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-2xl rounded-tl-none p-md shadow-sm">
+<p class="font-body-md text-body-md text-on-surface">Thank you. I have located that transaction. I will initiate a temporary freeze on that specific charge while we investigate. Would you like me to issue a replacement card as a precaution?</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Chat Input Area -->
+<div class="bg-surface-container-lowest border-t border-outline-variant p-md">
+<div class="flex items-end gap-sm bg-surface-container-low border border-outline-variant rounded-xl p-xs focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all duration-200">
+<button class="p-sm text-outline hover:text-primary transition-colors shrink-0">
+<span class="material-symbols-outlined">attach_file</span>
+</button>
+<textarea class="w-full bg-transparent border-none focus:ring-0 font-body-md text-on-surface resize-none py-sm px-xs min-h-[44px] max-h-[120px] outline-none" placeholder="Type your message..." rows="1"></textarea>
+<button class="p-sm bg-primary text-on-primary rounded-lg shrink-0 hover:scale-[1.05] active:scale-95 transition-transform shadow-sm flex items-center justify-center h-[44px] w-[44px]">
+<span class="material-symbols-outlined fill">send</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-6 bg-white dark:bg-slate-900 docked full-width bottom-0 rounded-t-xl border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_0_rgba(0,0,0,0.05)] transition-transform duration-300 ease-out">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 gap-1 w-16" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-manrope text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 gap-1 w-16" href="#">
+<span class="material-symbols-outlined">account_balance</span>
+<span class="font-manrope text-[10px] font-medium">Services</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 gap-1 w-16" href="#">
+<span class="material-symbols-outlined">event_available</span>
+<span class="font-manrope text-[10px] font-medium">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-900 dark:text-blue-200 scale-110 gap-1 w-16" href="#">
+<span class="material-symbols-outlined fill">contact_support</span>
+<span class="font-manrope text-[10px] font-medium">Support</span>
+</a>
+</nav>
+</body></html>

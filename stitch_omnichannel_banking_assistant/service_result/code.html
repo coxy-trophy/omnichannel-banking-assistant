@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Replace Debit Card - TrustBank</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e0e3e5",
+                    "surface-tint": "#3a5f94",
+                    "tertiary-container": "#592300",
+                    "on-surface-variant": "#43474f",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdbca",
+                    "surface-dim": "#d8dadc",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#003366",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed-variant": "#1f477b",
+                    "primary": "#001e40",
+                    "on-secondary-container": "#5b675e",
+                    "background": "#f7f9fb",
+                    "surface": "#f7f9fb",
+                    "on-primary-container": "#799dd6",
+                    "on-tertiary-fixed": "#341100",
+                    "on-tertiary-container": "#d8885c",
+                    "secondary": "#556158",
+                    "secondary-container": "#d9e6da",
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary-fixed-variant": "#723610",
+                    "tertiary": "#381300",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-lowest": "#ffffff",
+                    "outline": "#737780",
+                    "primary-fixed-dim": "#a7c8ff",
+                    "on-background": "#191c1e",
+                    "secondary-fixed-dim": "#bdcabe",
+                    "on-secondary-fixed": "#131e17",
+                    "on-primary-fixed": "#001b3c",
+                    "surface-container": "#eceef0",
+                    "on-error": "#ffffff",
+                    "primary-fixed": "#d5e3ff",
+                    "outline-variant": "#c3c6d1",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container-low": "#f2f4f6",
+                    "on-surface": "#191c1e",
+                    "secondary-fixed": "#d9e6da",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#a7c8ff",
+                    "on-secondary-fixed-variant": "#3e4a41",
+                    "surface-container-high": "#e6e8ea",
+                    "tertiary-fixed-dim": "#ffb690",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "xs": "4px",
+                    "margin": "32px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "lg": "24px",
+                    "xl": "32px",
+                    "gutter": "24px",
+                    "2xl": "48px"
+            },
+            "fontFamily": {
+                    "h1": [
+                            "Manrope"
+                    ],
+                    "button": [
+                            "Inter"
+                    ],
+                    "h2": [
+                            "Manrope"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ],
+                    "h3": [
+                            "Manrope"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "h1": [
+                            "40px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "button": [
+                            "15px",
+                            {
+                                    "lineHeight": "1",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "h2": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.25",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "1",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "h3": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-950/90 backdrop-blur-md shadow-sm border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 flex justify-between items-center w-full px-4 h-16 transition-all duration-200">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="text-lg font-extrabold text-blue-900 dark:text-white font-h1 text-h1" style="font-size: 1.125rem;">TrustBank</span>
+</div>
+<div class="flex items-center gap-md">
+<button aria-label="Notifications" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button aria-label="Account" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col md:flex-row max-w-[1280px] w-full mx-auto pb-24 md:pb-0">
+<!-- SideNav (Web Only) -->
+<nav class="hidden md:flex flex-col py-6 sticky left-0 top-0 h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 shrink-0">
+<div class="px-6 mb-8">
+<h2 class="text-xl font-black text-blue-900 dark:text-white">Admin Console</h2>
+<p class="text-slate-500 dark:text-slate-400 font-label-caps text-label-caps mt-xs">Management Portal</p>
+</div>
+<ul class="flex flex-col gap-sm">
+<li>
+<a class="flex items-center gap-md px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg mx-2 transition-all duration-200 hover:scale-[1.02] font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                        Overview
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-4 py-3 bg-blue-100/50 dark:bg-blue-900/30 text-blue-900 dark:text-blue-200 rounded-lg mx-2 transition-all duration-200 hover:scale-[1.02] font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        KYC Queue
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg mx-2 transition-all duration-200 hover:scale-[1.02] font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                        User Data
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg mx-2 transition-all duration-200 hover:scale-[1.02] font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">forum</span>
+                        Inquiries
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-md px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg mx-2 transition-all duration-200 hover:scale-[1.02] font-manrope text-sm font-semibold" href="#">
+<span class="material-symbols-outlined">settings_suggest</span>
+                        Admin Settings
+                    </a>
+</li>
+</ul>
+</nav>
+<!-- Page Content -->
+<div class="flex-grow p-4 md:p-margin lg:p-xl w-full max-w-3xl mx-auto">
+<!-- Breadcrumb / Back -->
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors mb-lg font-button text-button">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                Back to Services
+            </button>
+<!-- Hero Section -->
+<div class="mb-xl">
+<div class="flex items-center gap-sm mb-sm">
+<span class="inline-flex items-center gap-xs px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full font-label-caps text-label-caps border border-secondary-fixed-dim">
+<span class="material-symbols-outlined text-[14px]">local_atm</span>
+                        ATM / Quick Visit
+                    </span>
+<span class="inline-flex items-center gap-xs px-3 py-1 bg-surface-container-low text-on-surface-variant rounded-full font-label-caps text-label-caps border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">timer</span>
+                        5 mins
+                    </span>
+</div>
+<h1 class="font-h1 text-h1 text-on-surface mb-md">Replace Debit Card</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Order a new card if your current one is damaged or lost.</p>
+</div>
+<!-- Main Actions Card (Level 1 Card) -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] p-lg mb-xl relative overflow-hidden group">
+<!-- Decorative Graphic -->
+<div class="absolute -right-12 -top-12 opacity-10 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+<span class="material-symbols-outlined text-[200px] text-primary" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+</div>
+<div class="relative z-10 flex flex-col gap-lg">
+<div class="flex flex-col sm:flex-row gap-md w-full">
+<button class="flex-1 bg-primary text-on-primary font-button text-button py-4 px-6 rounded-lg shadow-sm hover:scale-[1.02] hover:shadow-[0_10px_30px_-5px_rgba(0,30,64,0.15)] transition-all duration-200 flex justify-center items-center gap-sm min-h-[48px]">
+<span class="material-symbols-outlined">local_atm</span>
+                            Do it at ATM
+                        </button>
+<button class="flex-1 bg-secondary-container text-on-secondary-container font-button text-button py-4 px-6 rounded-lg border border-secondary-fixed-dim hover:scale-[1.02] hover:bg-[#cde0ce] transition-all duration-200 flex justify-center items-center gap-sm min-h-[48px]">
+<span class="material-symbols-outlined">storefront</span>
+                            Book a branch
+                        </button>
+</div>
+<div class="bg-surface-container rounded-lg p-md flex items-start gap-md">
+<span class="material-symbols-outlined text-tertiary-container mt-1">info</span>
+<div>
+<h3 class="font-h3 text-h3 text-on-surface text-[18px] mb-xs">Important Note</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-[14px]">If your card is lost or stolen, please freeze it immediately from your dashboard before requesting a replacement.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Expandable Section: How it works -->
+<details class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] overflow-hidden group [&amp;_summary::-webkit-details-marker]:hidden">
+<summary class="flex justify-between items-center p-lg cursor-pointer hover:bg-surface-container-low transition-colors select-none">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary">help</span>
+<h2 class="font-h2 text-h2 text-[20px] text-on-surface">How it works</h2>
+</div>
+<span class="material-symbols-outlined text-outline transition-transform duration-200 group-open:-rotate-180">expand_more</span>
+</summary>
+<div class="p-lg pt-0 border-t border-outline-variant bg-surface-container-lowest">
+<ol class="flex flex-col gap-md mt-md relative">
+<!-- Connecting Line -->
+<div class="absolute left-[15px] top-4 bottom-4 w-px bg-outline-variant"></div>
+<li class="flex items-start gap-md relative bg-surface-container-lowest">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-button text-button shrink-0 z-10 border-4 border-surface-container-lowest">1</div>
+<div class="pt-1">
+<h4 class="font-button text-button text-on-surface mb-xs">Select your method</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-[14px]">Choose whether to replace it instantly at a designated smart ATM or schedule a branch visit.</p>
+</div>
+</li>
+<li class="flex items-start gap-md relative bg-surface-container-lowest">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-button text-button shrink-0 z-10 border-4 border-surface-container-lowest">2</div>
+<div class="pt-1">
+<h4 class="font-button text-button text-on-surface mb-xs">Verify identity</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-[14px]">You will need your ID and a quick biometric scan at the machine or with a teller.</p>
+</div>
+</li>
+<li class="flex items-start gap-md relative bg-surface-container-lowest">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-button text-button shrink-0 z-10 border-4 border-surface-container-lowest">3</div>
+<div class="pt-1">
+<h4 class="font-button text-button text-on-surface mb-xs">Get your new card</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-[14px]">Your new card is printed instantly and ready to use immediately.</p>
+</div>
+</li>
+</ol>
+</div>
+</details>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-6 bg-white dark:bg-slate-900 rounded-t-xl border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_0_rgba(0,0,0,0.05)]">
+<button aria-label="Home" class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-transform duration-300 ease-out font-manrope text-[10px] font-medium w-16">
+<span class="material-symbols-outlined mb-1">home</span>
+            Home
+        </button>
+<button aria-label="Services" class="flex flex-col items-center justify-center text-blue-900 dark:text-blue-200 scale-110 transition-transform duration-300 ease-out font-manrope text-[10px] font-medium w-16">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+            Services
+        </button>
+<button aria-label="Bookings" class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-transform duration-300 ease-out font-manrope text-[10px] font-medium w-16">
+<span class="material-symbols-outlined mb-1">event_available</span>
+            Bookings
+        </button>
+<button aria-label="Support" class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-transform duration-300 ease-out font-manrope text-[10px] font-medium w-16">
+<span class="material-symbols-outlined mb-1">contact_support</span>
+            Support
+        </button>
+</nav>
+</body></html>

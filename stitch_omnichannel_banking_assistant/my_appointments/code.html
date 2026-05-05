@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Day-of Visit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e0e3e5",
+                        "surface-tint": "#3a5f94",
+                        "tertiary-container": "#592300",
+                        "on-surface-variant": "#43474f",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffdbca",
+                        "surface-dim": "#d8dadc",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#003366",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#1f477b",
+                        "primary": "#001e40",
+                        "on-secondary-container": "#5b675e",
+                        "background": "#f7f9fb",
+                        "surface": "#f7f9fb",
+                        "on-primary-container": "#799dd6",
+                        "on-tertiary-fixed": "#341100",
+                        "on-tertiary-container": "#d8885c",
+                        "secondary": "#556158",
+                        "secondary-container": "#d9e6da",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-fixed-variant": "#723610",
+                        "tertiary": "#381300",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#737780",
+                        "primary-fixed-dim": "#a7c8ff",
+                        "on-background": "#191c1e",
+                        "secondary-fixed-dim": "#bdcabe",
+                        "on-secondary-fixed": "#131e17",
+                        "on-primary-fixed": "#001b3c",
+                        "surface-container": "#eceef0",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#d5e3ff",
+                        "outline-variant": "#c3c6d1",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-low": "#f2f4f6",
+                        "on-surface": "#191c1e",
+                        "secondary-fixed": "#d9e6da",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#a7c8ff",
+                        "on-secondary-fixed-variant": "#3e4a41",
+                        "surface-container-high": "#e6e8ea",
+                        "tertiary-fixed-dim": "#ffb690",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "xs": "4px",
+                        "margin": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "24px",
+                        "2xl": "48px"
+                    },
+                    "fontFamily": {
+                        "h1": ["Manrope", "sans-serif"],
+                        "button": ["Inter", "sans-serif"],
+                        "h2": ["Manrope", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "label-caps": ["Inter", "sans-serif"],
+                        "h3": ["Manrope", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h1": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "button": ["15px", { "lineHeight": "1", "fontWeight": "600" }],
+                        "h2": ["32px", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "h3": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="antialiased min-h-screen text-on-background pb-32 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-950/90 backdrop-blur-md sticky top-0 z-40 flex justify-between items-center w-full px-4 h-16 border-b border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-200">
+<div class="flex items-center gap-2">
+<span class="text-lg font-extrabold text-blue-900 dark:text-white font-manrope tracking-tight text-sm">TrustBank</span>
+</div>
+<!-- Desktop Nav Items injected from BottomNav logic per rules -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 font-manrope text-[10px] font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 p-2 rounded flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">home</span>
+<span class="text-sm">Home</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 font-manrope text-[10px] font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 p-2 rounded flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+<span class="text-sm">Services</span>
+</a>
+<a class="text-blue-900 dark:text-blue-300 font-semibold font-manrope text-[10px] font-medium transition-all duration-200 p-2 rounded flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px] icon-fill">event_available</span>
+<span class="text-sm">Bookings</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 font-manrope text-[10px] font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-200 p-2 rounded flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">contact_support</span>
+<span class="text-sm">Support</span>
+</a>
+</nav>
+<div class="flex items-center gap-4 text-blue-900 dark:text-blue-300">
+<span class="material-symbols-outlined cursor-pointer transition-all duration-200 active:scale-95 hover:bg-slate-50 dark:hover:bg-slate-800 p-1 rounded-full">notifications</span>
+<span class="material-symbols-outlined cursor-pointer transition-all duration-200 active:scale-95 hover:bg-slate-50 dark:hover:bg-slate-800 p-1 rounded-full">account_circle</span>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="max-w-[1280px] mx-auto px-md md:px-lg pt-lg md:pt-xl">
+<div class="mb-lg flex items-center justify-between">
+<h1 class="font-h1 text-h1 text-on-surface">Your Visit Today</h1>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg">
+<!-- Primary Appointment Card -->
+<div class="lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row">
+<!-- Details Section -->
+<div class="p-lg md:p-xl flex-1 flex flex-col justify-between border-b md:border-b-0 md:border-r border-outline-variant">
+<div>
+<div class="flex items-center gap-sm mb-md">
+<span class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-full font-label-caps text-label-caps inline-flex items-center border border-secondary-fixed-dim">
+                                Upcoming
+                            </span>
+</div>
+<h2 class="font-h2 text-h2 text-on-surface mb-xs">Central Square Branch</h2>
+<p class="font-body-lg text-body-lg text-primary-container flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">schedule</span>
+                            Today, 10:30 AM
+                        </p>
+</div>
+<div class="mt-xl space-y-md">
+<div class="flex items-start gap-md">
+<div class="bg-surface-container w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0 text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-xs">Meeting With</p>
+<p class="font-body-md text-body-md text-on-surface">Sarah Jenkins, Wealth Advisor</p>
+</div>
+</div>
+<div class="flex items-start gap-md">
+<div class="bg-surface-container w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0 text-on-surface-variant">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-xs">Purpose</p>
+<p class="font-body-md text-body-md text-on-surface">Annual Portfolio Review</p>
+</div>
+</div>
+</div>
+</div>
+<!-- QR Check-in Section -->
+<div class="p-lg md:p-xl w-full md:w-[320px] bg-surface flex flex-col items-center justify-center text-center">
+<p class="font-h3 text-h3 text-on-surface mb-sm">Ready for Check-in</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg">Scan this code at the kiosk upon arrival.</p>
+<div class="bg-white p-sm rounded-lg shadow-sm border border-outline-variant mb-lg">
+<img alt="QR Code" class="w-[180px] h-[180px] object-cover mix-blend-multiply" data-alt="A high-contrast, crisp black and white QR code displayed prominently in the center of a minimalist, modern digital interface. The surrounding UI is clean white with subtle grey shadows, reflecting a high-end corporate minimalist aesthetic. The lighting is even and flat to ensure optimal scannability for a secure banking check-in process. The overall mood is highly functional, secure, and technologically precise, devoid of any unnecessary decorative elements." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpiubq0guoSjNtDAvtcxsVMkREugoovr4SC7iSAGukqZnAi7lBduLOGXnlWBCODbeRSa2rIMoT1VfjWmDgsMY6Njp_1E0AlfZ2oPvOuU7kgYux18nZqzf-qXuiYzL0WavHC2TF0T4n_Q-lwGWdbcPIDKUNWCsk_pCWKQwYl0rPf1GcUVYiY6yraxGqoJCZx28FsM5_Fe56dM4GrgAvyKc43p45t85rCABmg6KBo3hUNwCwFssegy-doDMK-j6gtY9aSNYb863eloE"/>
+</div>
+<button class="text-primary font-button text-button flex items-center gap-2 hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_to_home_screen</span>
+                        Add to Apple Wallet
+                    </button>
+</div>
+</div>
+<!-- Location / Map Side Panel -->
+<div class="lg:col-span-4 flex flex-col gap-lg">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] overflow-hidden flex flex-col h-full">
+<div class="h-[200px] w-full relative bg-surface-variant">
+<img alt="Map showing branch location" class="w-full h-full object-cover" data-alt="A clean, modern digital map interface showing a precise location marker for a bank branch in a dense urban environment. The map utilizes a highly refined, minimalist color palette primarily consisting of soft greys, subtle slate blues, and pristine whites to represent city blocks and streets. The lighting conveys a bright, digital clarity essential for navigation. The aesthetic is strictly informational, reflecting a premium corporate identity designed to guide users effortlessly without visual clutter." data-location="Central Square" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-jSAagsJZ7PHqehFQdr_6HOYHjPG4l9gvSrAw7cOWqPMdUe6_40Tkegt4PNQlt7JwdTGMDpCEcZPgmkUK6lAX6lyUBDLvf7L339PYQ7JLc7g9LxHmC5fS8x7MQej9vEVBUlngENtqnen4sGqQxEXV-WwQIkv62Nn7qLc-aW88nrNeynwBdyTFzLJwYTKjeeTjlWazFtI0fsLUJg5Gcp68rL1ptJjTutjnyxG18kbKoZtMQbSa2aO5tVmywqUxE1yjxl3kiCEdT-k"/>
+</div>
+<div class="p-lg flex flex-col flex-1 justify-between">
+<div>
+<h3 class="font-h3 text-h3 text-on-surface mb-xs">Location</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md">
+                                1200 Central Square Blvd.<br/>
+                                Suite 100, Financial District
+                            </p>
+</div>
+<div class="flex gap-sm mt-md">
+<button class="flex-1 bg-surface-container text-on-surface font-button text-button h-[48px] rounded-lg border border-outline-variant hover:bg-surface-container-high transition-all duration-200 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">directions</span>
+                                Directions
+                            </button>
+</div>
+</div>
+</div>
+<!-- Actions Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-lg flex flex-col gap-sm">
+<button class="w-full bg-surface-container text-on-surface font-button text-button h-[48px] rounded-lg border border-outline-variant hover:bg-surface-container-high hover:scale-[1.02] transition-all duration-200">
+                        Reschedule Appointment
+                    </button>
+<button class="w-full bg-transparent text-error font-button text-button h-[48px] rounded-lg hover:bg-error-container transition-all duration-200">
+                        Cancel Appointment
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-white dark:bg-slate-900 fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-6 rounded-t-xl border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_20px_0_rgba(0,0,0,0.05)] transition-transform duration-300 ease-out">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-manrope text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1">account_balance</span>
+<span class="font-manrope text-[10px] font-medium">Services</span>
+</a>
+<a class="flex flex-col items-center justify-center text-blue-900 dark:text-blue-200 scale-110 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1 icon-fill">event_available</span>
+<span class="font-manrope text-[10px] font-medium">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 hover:text-blue-700 dark:hover:text-blue-300 transition-all duration-200" href="#">
+<span class="material-symbols-outlined mb-1">contact_support</span>
+<span class="font-manrope text-[10px] font-medium">Support</span>
+</a>
+</nav>
+</body></html>

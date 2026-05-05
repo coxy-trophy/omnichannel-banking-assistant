@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-surface: #f7f9fb;
+  --color-surface-dim: #d8dadc;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #43474f;
+  --color-inverse-surface: #2d3133;
+  --color-inverse-on-surface: #eff1f3;
+  --color-outline: #737780;
+  --color-outline-variant: #c3c6d1;
+  --color-surface-tint: #3a5f94;
+  --color-primary: #001e40;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #003366;
+  --color-on-primary-container: #799dd6;
+  --color-inverse-primary: #a7c8ff;
+  --color-secondary: #556158;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d9e6da;
+  --color-on-secondary-container: #5b675e;
+  --color-tertiary: #381300;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #592300;
+  --color-on-tertiary-container: #d8885c;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-background: #f7f9fb;
+  --color-on-background: #191c1e;
+  --color-success-mint: #E8F5E9;
+  --color-on-success-mint: #2E7D32;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-manrope: "Manrope", sans-serif;
+  --font-inter: "Inter", sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-inter);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-manrope);
 }
