@@ -34,16 +34,18 @@ export async function generateFakeReports() {
     // Get daily bookings for last 7 days
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const sevenDaysAgoTimestamp = Math.floor(sevenDaysAgo.getTime() / 1000);
 
+    // SQLite: timestamps are stored in seconds, convert to date string
     const rawDailyBookings = await db
       .select({
-        date: sql<string>`date(created_at)`,
+        date: sql<string>`date(datetime(created_at, 'unixepoch'))`,
         count: count()
       })
       .from(bookings)
-      .where(gte(bookings.createdAt, sevenDaysAgo))
-      .groupBy(sql`date(created_at)`)
-      .orderBy(sql`date(created_at)`);
+      .where(sql`created_at >= ${sevenDaysAgoTimestamp}`)
+      .groupBy(sql`date(datetime(created_at, 'unixepoch'))`)
+      .orderBy(sql`date(datetime(created_at, 'unixepoch'))`);
 
     // Create array for all 7 days, filling in missing days with 0
     const dailyBookings = Array.from({ length: 7 }).map((_, i) => {
