@@ -91,3 +91,21 @@ export async function submitKYC(formData: FormData) {
     return { error: 'Failed to submit KYC' };
   }
 }
+
+export async function loginAdmin(formData: FormData) {
+  const password = formData.get('password') as string;
+  const masterPassword = process.env.ADMIN_MASTER_PASSWORD;
+
+  if (password === masterPassword) {
+    const cookieStore = await cookies();
+    cookieStore.set('admin_auth', 'true', { 
+      path: '/', 
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24 // 1 day
+    });
+    return { success: true };
+  }
+
+  return { error: 'Invalid institutional key' };
+}
