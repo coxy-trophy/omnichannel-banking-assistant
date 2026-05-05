@@ -6,7 +6,9 @@ import dns from 'dns';
 // Force IPv4 for institutional network resilience
 dns.setDefaultResultOrder('ipv4first');
 
-const url = process.env.DATABASE_URL || "postgresql://neondb_owner:password@ep-placeholder.us-west-2.aws.neon.tech/neondb?sslmode=require";
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not defined in environment variables');
+}
 
-const sql = neon(url);
+const sql = neon(process.env.DATABASE_URL);
 export const db = drizzle(sql, { schema });

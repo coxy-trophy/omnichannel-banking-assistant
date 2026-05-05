@@ -17,14 +17,18 @@ import {
   TrendingDown,
   AlertTriangle,
   ChevronRight,
-  MoreVertical
+  MoreVertical,
+  PieChart,
+  Activity
 } from 'lucide-react';
 import Link from 'next/link';
 import { getAdminStats, getRecentInquiries } from '@/lib/adminActions';
+import { generateFakeReports } from '@/lib/reportGenerator';
 
 export default async function AdminDashboard() {
   const stats = await getAdminStats();
   const inquiries = await getRecentInquiries();
+  const reports = generateFakeReports();
 
   return (
     <div className="flex h-screen overflow-hidden bg-background font-inter text-on-background">
@@ -130,6 +134,61 @@ export default async function AdminDashboard() {
               />
             </div>
 
+            {/* Visual Reports Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="lg:col-span-2 border-outline-variant/30 shadow-md">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h3 className="font-manrope text-lg font-bold flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-primary" /> Daily Activity Ledger
+                    </h3>
+                    <p className="text-[10px] text-outline uppercase font-bold tracking-widest">Transaction Trends</p>
+                  </div>
+                  <MoreVertical size={16} className="text-outline" />
+                </div>
+                <div className="h-48 flex items-end justify-between gap-2 px-4">
+                  {reports.dailyBookings.map((day, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                      <div 
+                        className="w-full bg-primary/20 rounded-t-lg transition-all hover:bg-primary/40 relative group"
+                        style={{ height: `${(day.count / 50) * 100}%` }}
+                      >
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-primary text-on-primary text-[8px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                          {day.count}
+                        </div>
+                      </div>
+                      <span className="text-[8px] font-bold text-outline uppercase">{day.day.split(' ')[1]}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              <Card className="border-outline-variant/30 shadow-md">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h3 className="font-manrope text-lg font-bold flex items-center gap-2">
+                      <PieChart className="w-4 h-4 text-primary" /> Channel Mix
+                    </h3>
+                    <p className="text-[10px] text-outline uppercase font-bold tracking-widest">Service Distribution</p>
+                  </div>
+                </div>
+                <div className="space-y-6">
+                   <div className="relative h-32 w-32 mx-auto">
+                      <div className="absolute inset-0 border-[12px] border-primary-container rounded-full" />
+                      <div className="absolute inset-0 border-[12px] border-primary rounded-full" style={{ clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%, 20% 0%)' }} />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                         <span className="text-xl font-black text-primary">{reports.atmVsBranchUsage.app}%</span>
+                      </div>
+                   </div>
+                   <div className="space-y-3 pt-4 border-t border-outline-variant/30">
+                      <UsageItem color="bg-primary" label="Mobile Application" percent={`${reports.atmVsBranchUsage.app}%`} />
+                      <UsageItem color="bg-primary-container" label="ATM Terminals" percent={`${reports.atmVsBranchUsage.atm}%`} />
+                      <UsageItem color="bg-surface-tint" label="In-Branch" percent={`${reports.atmVsBranchUsage.branch}%`} />
+                   </div>
+                </div>
+              </Card>
+            </div>
+
             <Card className="p-0 overflow-hidden border-outline-variant/30 shadow-md">
               <div className="px-6 py-4 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-lowest">
                 <h3 className="font-manrope text-lg font-bold">Recent Customer Inquiries</h3>
@@ -223,6 +282,18 @@ function MetricCard({ title, value, trend, up, icon, color = "primary" }: any) {
       <p className="text-outline text-[10px] font-bold uppercase tracking-widest mb-1">{title}</p>
       <h3 className="text-2xl font-manrope font-bold text-on-surface">{value}</h3>
     </Card>
+  );
+}
+
+function UsageItem({ color, label, percent }: any) {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
+        <div className={`w-2 h-2 rounded-full ${color}`}></div>
+        <span className="text-[10px] font-bold text-on-surface uppercase tracking-tight">{label}</span>
+      </div>
+      <span className="text-[10px] font-black text-primary">{percent}</span>
+    </div>
   );
 }
 
