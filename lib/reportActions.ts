@@ -289,7 +289,7 @@ export async function downloadPdfReport(): Promise<{ data: Buffer; filename: str
 
   // Title
   doc.setFontSize(20);
-  doc.text('TRUSTBANK LEDGER', 105, 20, { align: 'center' });
+  doc.text('BANK LEDGER', 105, 20, { align: 'center' });
   doc.setFontSize(10);
   doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 28, { align: 'center' });
 
