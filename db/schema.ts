@@ -90,6 +90,10 @@ export const transactions = sqliteTable('transactions', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 });
 
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  user: one(users, { fields: [transactions.userId], references: [users.id] }),
+}));
+
 export const sessions = sqliteTable('sessions', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id).notNull(),
