@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
 export const metadata: Metadata = {
-  title: "TrustBank Omnichannel Assistant",
+  title: "Bank Ledger Omnichannel Assistant",
   description: "Modern banking assistant",
 };
 

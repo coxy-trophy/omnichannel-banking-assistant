@@ -26,7 +26,7 @@ export default function RegisterPage() {
       <Card className="max-w-md w-full">
         <header className="text-center mb-8">
           <h1 className="font-manrope text-3xl font-bold text-primary">Create Account</h1>
-          <p className="text-on-surface-variant">Join TrustBank and get GH₵ 1,000 initial balance</p>
+          <p className="text-on-surface-variant">Join Bank Ledger and get GH₵ 1,000 initial balance</p>
         </header>
 
         <form action={handleSubmit} className="space-y-4">

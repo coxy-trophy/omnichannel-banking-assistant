@@ -14,7 +14,7 @@ export default async function HomePage() {
       <header className="bg-surface-container-lowest border-b border-outline-variant px-6 py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md bg-white/80 shadow-sm">
         <div className="flex items-center gap-2">
            <div className="bg-primary text-on-primary w-10 h-10 rounded-xl flex items-center justify-center font-black shadow-lg shadow-primary/20">TB</div>
-           <h1 className="font-manrope font-black text-2xl text-primary tracking-tighter">TrustBank</h1>
+           <h1 className="font-manrope font-black text-2xl text-primary tracking-tighter">Bank Ledger</h1>
         </div>
         <div className="flex items-center gap-3">
           {isLoggedIn ? (
@@ -132,7 +132,7 @@ export default async function HomePage() {
             <div className="space-y-4">
                <div className="flex items-center gap-2">
                   <div className="bg-white text-primary w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs">TB</div>
-                  <h4 className="font-manrope font-black text-xl tracking-tighter text-white">TrustBank</h4>
+                  <h4 className="font-manrope font-black text-xl tracking-tighter text-white">Bank Ledger</h4>
                </div>
                <p className="text-sm text-on-primary-container font-medium max-w-xs">Authorized by the central institutional authority. Registered and regulated since 2026.</p>
             </div>
@@ -154,7 +154,7 @@ export default async function HomePage() {
             </div>
          </div>
          <div className="max-w-7xl mx-auto pt-8 flex justify-between items-center text-[10px] font-black uppercase tracking-widest opacity-50">
-            <p>&copy; 2026 TrustBank Institutional. All Rights Reserved.</p>
+            <p>&copy; 2026 Bank Ledger Institutional. All Rights Reserved.</p>
             <div className="flex gap-6">
                <span>Privacy</span>
                <span>Terms</span>

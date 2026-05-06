@@ -86,7 +86,7 @@ export default async function UserDashboard() {
       <header className="bg-surface-container-lowest border-b border-outline-variant px-6 py-4 flex justify-between items-center sticky top-0 z-10">
         <h1 className="font-manrope text-2xl font-bold text-primary flex items-center gap-2">
           <span className="bg-primary text-on-primary w-8 h-8 rounded-lg flex items-center justify-center text-xs">TB</span>
-          TrustBank
+          Bank Ledger
         </h1>
         <div className="flex items-center gap-4">
           <span className="text-sm font-bold bg-primary/5 text-primary px-3 py-1 rounded-full hidden sm:block">{tierName}</span>

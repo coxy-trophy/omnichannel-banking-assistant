@@ -67,7 +67,7 @@ export default async function AdminDashboard() {
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
         <header className="bg-surface-container-lowest backdrop-blur-md font-manrope tracking-tight text-sm border-b border-outline-variant shadow-sm sticky top-0 z-40 flex justify-between items-center w-full px-6 h-16 transition-all duration-200 flex-shrink-0">
           <div className="md:hidden">
-            <span className="text-lg font-extrabold text-primary">TrustBank</span>
+            <span className="text-lg font-extrabold text-primary">Bank Ledger</span>
           </div>
           
           <div className="flex-1 max-w-md md:mx-4 relative group">

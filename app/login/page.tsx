@@ -26,7 +26,7 @@ export default function LoginPage() {
       <Card className="max-w-md w-full">
         <header className="text-center mb-8">
           <h1 className="font-manrope text-3xl font-bold text-primary">Welcome Back</h1>
-          <p className="text-on-surface-variant">Sign in to your TrustBank account</p>
+          <p className="text-on-surface-variant">Sign in to your Bank Ledger account</p>
         </header>
 
         <form action={handleSubmit} className="space-y-4">
