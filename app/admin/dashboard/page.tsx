@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
       <nav className="bg-surface-container-lowest font-manrope text-sm font-semibold h-screen w-64 border-r border-outline-variant hidden md:flex flex-col py-6 sticky left-0 top-0 transition-all duration-200 z-30 flex-shrink-0">
         <div className="px-6 mb-8">
           <h1 className="text-xl font-black text-primary flex items-center gap-2">
-            <span className="bg-primary text-on-primary w-8 h-8 rounded-lg flex items-center justify-center text-[10px]">AC</span>
+            <span className="bg-primary text-on-primary w-8 h-8 rounded-lg flex items-center justify-center text-[10px]">BL</span>
             Admin Console
           </h1>
           <p className="text-[9px] uppercase tracking-widest text-outline mt-1 font-bold">Institutional Portal</p>
