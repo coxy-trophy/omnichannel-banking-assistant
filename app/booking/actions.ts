@@ -13,10 +13,10 @@ export async function getServices() {
     // If no services exist, seed some default ones
     if (allServices.length === 0) {
       const defaultServices = [
-        { id: randomUUID(), name: 'Institutional Consultation', description: 'Meet with a banking advisor', estimatedTime: 30, channelType: 'branch' },
-        { id: randomUUID(), name: 'Account Forensics', description: 'Review account history and statements', estimatedTime: 45, channelType: 'branch' },
-        { id: randomUUID(), name: 'Wealth Management', description: 'Investment and portfolio review', estimatedTime: 60, channelType: 'branch' },
-        { id: randomUUID(), name: 'Credit Facility Review', description: 'Loan and credit assessment', estimatedTime: 45, channelType: 'branch' },
+        { id: randomUUID(), name: 'Card Replacement', description: 'Replace lost or damaged ATM/debit card', estimatedTime: 30, channelType: 'branch' },
+        { id: randomUUID(), name: 'Loan Consultation', description: 'Discuss loan options and requirements', estimatedTime: 45, channelType: 'branch' },
+        { id: randomUUID(), name: 'Complaint Resolution', description: 'Resolve account or service issues', estimatedTime: 30, channelType: 'branch' },
+        { id: randomUUID(), name: 'Other', description: 'General banking assistance', estimatedTime: 30, channelType: 'branch' },
       ];
 
       for (const service of defaultServices) {
