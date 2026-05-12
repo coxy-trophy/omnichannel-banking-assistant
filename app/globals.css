@@ -51,3 +51,27 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-manrope);
 }
+
+/* Leaflet map custom styles */
+.leaflet-container {
+  font-family: var(--font-inter);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  width: 200px !important;
+}
+
+.custom-marker div {
+  transition: transform 0.2s;
+}
+
+.custom-marker:hover div {
+  transform: rotate(45deg) scale(1.2);
+}

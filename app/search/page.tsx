@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/Button';
 import { Search, MapPin, DollarSign, Phone, Building, ArrowLeft, ExternalLink, Map } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+const AtmMap = dynamic(() => import('@/components/AtmMap'), { ssr: false });
 
 const ATM_LOCATIONS = [
   // Accra ATMs (20 locations)
@@ -49,6 +52,7 @@ function SearchContent() {
   const [searchType, setSearchType] = useState<'all' | 'atm' | 'services'>('all');
   const [showMap, setShowMap] = useState(false);
   const [selectedAtm, setSelectedAtm] = useState<any>(null);
+  const [mapCenter] = useState<[number, number]>([5.6037, -0.1870]); // Accra center
 
   useEffect(() => {
     const q = searchParams.get('q');
@@ -156,206 +160,13 @@ function SearchContent() {
                 {results.filter(r => r.category === 'ATM').length} ATM(s) shown
               </span>
             </div>
-            <div className="relative w-full h-[500px] bg-surface-container-low">
-              {/* Custom SVG Map of Accra and surrounding areas */}
-              <svg viewBox="0 0 800 400" className="w-full h-full">
-                {/* Background - Land */}
-                <rect width="800" height="400" fill="#f5f5f5" />
-
-                {/* Gulf of Guinea (water) */}
-                <path d="M 0 320 Q 200 300 400 290 Q 600 280 800 290 L 800 400 L 0 400 Z" fill="#a8d5e5" />
-
-                {/* Major roads */}
-                <path d="M 50 200 Q 200 180 400 170 Q 600 160 750 180" stroke="#d0d0d0" strokeWidth="3" fill="none" />
-                <path d="M 300 50 Q 320 150 350 250" stroke="#d0d0d0" strokeWidth="3" fill="none" />
-                <path d="M 100 100 Q 250 150 400 200" stroke="#d0d0d0" strokeWidth="2" fill="none" />
-
-                {/* Area labels */}
-                <text x="400" y="80" textAnchor="middle" className="text-xs fill-gray-400 font-bold" style={{fontSize: '12px'}}>NORTHERN AREAS</text>
-                <text x="200" y="200" textAnchor="middle" className="text-xs fill-gray-400 font-bold" style={{fontSize: '11px'}}>ACCRA METRO</text>
-                <text x="600" y="150" textAnchor="middle" className="text-xs fill-gray-400 font-bold" style={{fontSize: '11px'}}>TEMA</text>
-                <text x="400" y="350" textAnchor="middle" className="text-xs fill-gray-500 font-bold" style={{fontSize: '11px'}}>Gulf of Guinea</text>
-
-                {/* ATM Pins - Accra Central */}
-                <g transform="translate(180, 220)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 1))}>
-                  <circle cx="0" cy="0" r="20" fill={ATM_LOCATIONS.find(a => a.id === 1)?.available ? '#22c55e30' : '#ef444430'} className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill={ATM_LOCATIONS.find(a => a.id === 1)?.available ? '#22c55e' : '#ef4444'} />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Osu Oxford St */}
-                <g transform="translate(280, 240)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 2))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Airport City */}
-                <g transform="translate(240, 180)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 3))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* East Legon */}
-                <g transform="translate(320, 160)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 4))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Spintex */}
-                <g transform="translate(380, 190)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 5))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Tema Station */}
-                <g transform="translate(120, 180)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 6))}>
-                  <circle cx="0" cy="0" r="20" fill="#ef444430" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#ef4444" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Kaneshie */}
-                <g transform="translate(100, 210)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 7))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Circle */}
-                <g transform="translate(150, 200)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 8))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Adabraka */}
-                <g transform="translate(200, 195)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 9))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* James Town */}
-                <g transform="translate(190, 250)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 10))}>
-                  <circle cx="0" cy="0" r="20" fill="#ef444430" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#ef4444" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Labone */}
-                <g transform="translate(300, 220)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 11))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Cantonments */}
-                <g transform="translate(260, 200)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 12))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Tesano */}
-                <g transform="translate(160, 160)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 13))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Achimota */}
-                <g transform="translate(130, 140)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 14))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Dansoman */}
-                <g transform="translate(60, 230)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 15))}>
-                  <circle cx="0" cy="0" r="20" fill="#ef444430" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#ef4444" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Lapaz */}
-                <g transform="translate(100, 170)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 16))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Mallam */}
-                <g transform="translate(50, 200)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 17))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Tema Community 1 */}
-                <g transform="translate(520, 170)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 18))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Tema Harbour */}
-                <g transform="translate(560, 200)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 19))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-
-                {/* Ashaiman */}
-                <g transform="translate(480, 150)" className="cursor-pointer" onClick={() => setSelectedAtm(ATM_LOCATIONS.find(a => a.id === 20))}>
-                  <circle cx="0" cy="0" r="20" fill="#22c55e30" className="animate-pulse" />
-                  <path d="M 0 -15 Q 8 -5 8 5 Q 8 12 0 18 Q -8 12 -8 5 Q -8 -5 0 -15" fill="#22c55e" />
-                  <circle cx="0" cy="0" r="4" fill="white" />
-                </g>
-              </svg>
-
-              {/* Selected ATM Info Overlay */}
-              {selectedAtm && (
-                <div className="absolute top-4 right-4 bg-background border border-outline-variant/30 rounded-xl p-4 shadow-2xl max-w-xs z-10">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-bold text-primary">{selectedAtm.name}</h4>
-                    <button onClick={() => setSelectedAtm(null)} className="text-outline hover:text-on-surface">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                  <p className="text-xs text-on-surface-variant mb-2">{selectedAtm.location}</p>
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${
-                    selectedAtm.available ? 'bg-success-mint text-on-success-mint' : 'bg-error/10 text-error'
-                  }`}>
-                    {selectedAtm.available ? 'Available' : 'Out of Service'}
-                  </span>
-                  {selectedAtm.available && (
-                    <Link href="/deposit">
-                      <Button variant="outline" className="w-full mt-2 text-xs py-2 h-auto">
-                        Make Deposit
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              )}
-
-              {/* Legend */}
-              <div className="absolute bottom-4 left-4 bg-background/90 border border-outline-variant/30 rounded-xl p-3 shadow-lg">
-                <p className="text-[9px] font-bold uppercase tracking-widest text-outline mb-2">Legend</p>
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-3 h-3 rounded-full bg-success-mint" />
-                  <span className="text-xs text-on-surface">Available</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-error" />
-                  <span className="text-xs text-on-surface">Out of Service</span>
-                </div>
-              </div>
+            <div className="relative w-full h-[500px]">
+              <AtmMap
+                atms={results.filter(r => r.category === 'ATM')}
+                center={mapCenter}
+                onAtmSelect={setSelectedAtm}
+                selectedAtm={selectedAtm}
+              />
             </div>
           </Card>
         )}
