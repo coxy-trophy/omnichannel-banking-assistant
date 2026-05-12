@@ -8,6 +8,7 @@ import { eq, desc, and } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/Card';
 import { MapPin, Calendar, HelpCircle, Search, CreditCard, FileText, Building, PiggyBank, Landmark, ShieldCheck, AlertTriangle, TrendingUp } from 'lucide-react';
+import AtmMapWidget from '@/components/AtmMapWidget';
 
 export default async function HomePage() {
   const session = await getSession();
@@ -191,41 +192,20 @@ export default async function HomePage() {
                 <Link href="/search" className="text-[#00327d] text-sm font-semibold hover:underline">View Map</Link>
               </div>
 
-              <div className="relative h-96 w-full rounded-2xl overflow-hidden bg-[#f3f3fc]">
-                <svg viewBox="0 0 800 400" className="w-full h-full">
-                  <rect width="800" height="400" fill="#f5f5f5" />
-                  <path d="M 0 320 Q 200 300 400 290 Q 600 280 800 290 L 800 400 L 0 400 Z" fill="#a8d5e5" />
-                  <path d="M 50 200 Q 200 180 400 170 Q 600 160 750 180" stroke="#d0d0d0" strokeWidth="3" fill="none" />
-                  <path d="M 300 50 Q 320 150 350 250" stroke="#d0d0d0" strokeWidth="3" fill="none" />
-
-                  {/* ATM Markers */}
-                  <g className="cursor-pointer">
-                    <circle cx="180" cy="220" r="18" fill="#22c55e" className="opacity-80" />
-                    <text x="180" y="224" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$</text>
-                  </g>
-                  <g className="cursor-pointer">
-                    <circle cx="280" cy="240" r="18" fill="#22c55e" className="opacity-80" />
-                    <text x="280" y="224" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$</text>
-                  </g>
-                  <g className="cursor-pointer">
-                    <circle cx="240" cy="180" r="18" fill="#22c55e" className="opacity-80" />
-                    <text x="240" y="224" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$</text>
-                  </g>
-                  <g className="cursor-pointer">
-                    <circle cx="320" cy="160" r="18" fill="#ef4444" className="opacity-80" />
-                    <text x="320" y="224" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">$</text>
-                  </g>
-                </svg>
-
-                {/* Floating Info Card */}
-                <div className="absolute bottom-6 left-6 right-6 lg:right-auto lg:w-80 bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-[#c3c6d5]/30">
-                  <h3 className="font-['Manrope'] font-bold text-[#00327d] mb-1">Central Square ATM</h3>
-                  <p className="text-sm text-[#386474] mb-4">Open 24/7 • Cash & Deposits</p>
-                  <div className="flex gap-2">
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-[#c7e8f5] text-[#1d4c5b] rounded-full">ATM</span>
-                    <span className="text-[10px] font-bold uppercase px-2 py-0.5 bg-[#e2e2eb] text-[#434653] rounded-full">ACTIVE</span>
-                  </div>
-                </div>
+              <div className="relative h-96 w-full rounded-2xl overflow-hidden bg-[#f3f3fc] border border-[#c3c6d5]/30">
+                <AtmMapWidget
+                  atms={[
+                    { id: 1, name: 'Accra Central ATM', location: 'Independence Ave, Accra', lat: 5.5560, lng: -0.2026, available: true, category: 'ATM' },
+                    { id: 2, name: 'Osu Oxford St ATM', location: 'Oxford St, Osu, Accra', lat: 5.5558, lng: -0.1769, available: true, category: 'ATM' },
+                    { id: 3, name: 'Airport City ATM', location: 'Airport City, Accra', lat: 5.6052, lng: -0.1769, available: true, category: 'ATM' },
+                    { id: 4, name: 'East Legon ATM', location: 'American House, East Legon', lat: 5.6392, lng: -0.1618, available: true, category: 'ATM' },
+                    { id: 5, name: 'Spintex ATM', location: 'Spintex Road, Accra', lat: 5.6298, lng: -0.1356, available: true, category: 'ATM' },
+                    { id: 8, name: 'Circle ATM', location: 'Kwame Nkrumah Circle, Accra', lat: 5.5676, lng: -0.2156, available: true, category: 'ATM' },
+                    { id: 11, name: 'Labone ATM', location: 'Labone, Accra', lat: 5.5620, lng: -0.1756, available: true, category: 'ATM' },
+                    { id: 14, name: 'Achimota ATM', location: 'Achimota Mall, Accra', lat: 5.6220, lng: -0.2256, available: true, category: 'ATM' },
+                  ]}
+                  center={[5.6037, -0.1870]}
+                />
               </div>
             </div>
 
