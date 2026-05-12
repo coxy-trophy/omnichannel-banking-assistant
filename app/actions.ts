@@ -79,17 +79,6 @@ export async function registerUser(formData: FormData) {
       createdAt: new Date(),
     });
 
-    // Seed initial balance (GH₵ 1000)
-    await db.insert(transactions).values({
-      id: randomUUID(),
-      userId,
-      amount: 1000,
-      currency: 'GHS',
-      type: 'deposit',
-      status: 'success',
-      createdAt: new Date(),
-    });
-
     // Create session
     const sessionId = await createSession(userId);
 

@@ -4,7 +4,7 @@ import { db } from '@/db';
 import { services, branches, bookings } from '@/db/schema';
 import { getSession } from '@/app/actions';
 import { randomUUID } from 'crypto';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export async function getServices() {
   try {
@@ -71,7 +71,7 @@ export async function createBooking(data: {
   }
 
   const userId = session.data.user.id;
-  const checkinCode = `TB-${randomUUID().substring(0, 8).toUpperCase()}`;
+  const checkinCode = `BL-${randomUUID().substring(0, 8).toUpperCase()}`;
 
   try {
     await db.insert(bookings).values({
@@ -89,5 +89,74 @@ export async function createBooking(data: {
   } catch (error) {
     console.error('Error creating booking:', error);
     return { error: 'Failed to create booking' };
+  }
+}
+
+export async function cancelBooking(bookingId: string) {
+  const session = await getSession();
+  if (!session.data?.user) {
+    return { error: 'Not authenticated' };
+  }
+
+  const userId = session.data.user.id;
+
+  try {
+    // Verify the booking belongs to this user
+    const booking = await db.query.bookings.findFirst({
+      where: and(
+        eq(bookings.id, bookingId),
+        eq(bookings.userId, userId)
+      ),
+    });
+
+    if (!booking) {
+      return { error: 'Booking not found' };
+    }
+
+    if (booking.status !== 'upcoming') {
+      return { error: 'Only upcoming bookings can be cancelled' };
+    }
+
+    await db.update(bookings)
+      .set({ status: 'cancelled' })
+      .where(eq(bookings.id, bookingId));
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error cancelling booking:', error);
+    return { error: 'Failed to cancel booking' };
+  }
+}
+
+export async function getBookingById(bookingId: string) {
+  const session = await getSession();
+  if (!session.data?.user) {
+    return null;
+  }
+
+  const userId = session.data.user.id;
+
+  try {
+    const booking: any = await db.query.bookings.findFirst({
+      where: and(
+        eq(bookings.id, bookingId),
+        eq(bookings.userId, userId)
+      ),
+      with: {
+        service: true,
+        branch: true,
+      } as any,
+    });
+
+    if (!booking) return null;
+
+    return {
+      ...booking,
+      service: booking.service,
+      branch: booking.branch,
+    };
+  } catch (error) {
+    console.error('Error fetching booking:', error);
+    return null;
   }
 }

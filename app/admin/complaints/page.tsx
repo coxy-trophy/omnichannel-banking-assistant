@@ -47,7 +47,7 @@ export default async function AdminComplaintsPage() {
             </thead>
             <tbody className="text-xs divide-y divide-outline-variant/10">
               {inquiries.length > 0 ? inquiries.map((iq: any) => (
-                <tr key={iq.id} className="hover:bg-surface-container-low/50 transition-colors">
+                <tr key={iq.id} className="hover:bg-surface-container-low/50 transition-colors cursor-pointer" onClick={() => window.location.href = `/admin/complaints/${iq.id}`}>
                   <td className="p-5 font-mono text-[10px] text-outline font-bold uppercase tracking-tighter">#{iq.id.slice(0, 8)}</td>
                   <td className="p-5 font-bold text-sm">{iq.user?.email || 'Guest Participant'}</td>
                   <td className="p-5 font-medium">{iq.category}</td>
@@ -56,7 +56,7 @@ export default async function AdminComplaintsPage() {
                       {iq.status}
                     </span>
                   </td>
-                  <td className="p-5 text-right">
+                  <td className="p-5 text-right" onClick={(e) => e.stopPropagation()}>
                     <ComplaintActions complaintId={iq.id} status={iq.status} />
                   </td>
                 </tr>

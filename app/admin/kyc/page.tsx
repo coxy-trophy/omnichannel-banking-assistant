@@ -51,7 +51,7 @@ export default async function AdminKYCPage() {
                     </span>
                   </td>
                   <td className="p-5 text-right">
-                    <KycActions userId={user.id} />
+                    <KycActions userId={user.id} documents={user.documents || []} />
                   </td>
                 </tr>
               )) : (

@@ -1,8 +1,9 @@
 'use server';
 
 import { db } from '@/db';
-import { users, bookings, transactions, complaints } from '@/db/schema';
+import { users, bookings, transactions, complaints, kycDocuments, messages } from '@/db/schema';
 import { count, eq, sql, and, gte, sum, desc } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 
 export async function getAdminStats() {
   try {
@@ -45,9 +46,31 @@ export async function getAdminStats() {
 
 export async function getPendingKYC() {
   try {
-    return await db.query.users.findMany({
+    const pendingUsers = await db.query.users.findMany({
       where: eq(users.kycStatus, 'pending'),
       orderBy: [desc(users.createdAt)],
+    });
+
+    // Fetch documents for each user
+    const usersWithDocs = await Promise.all(pendingUsers.map(async (user) => {
+      const docs = await db.query.kycDocuments.findMany({
+        where: eq(kycDocuments.userId, user.id),
+        orderBy: [desc(kycDocuments.uploadedAt)],
+      });
+      return { ...user, documents: docs };
+    }));
+
+    return usersWithDocs;
+  } catch (error) {
+    return [];
+  }
+}
+
+export async function getKycDocuments(userId: string) {
+  try {
+    return await db.query.kycDocuments.findMany({
+      where: eq(kycDocuments.userId, userId),
+      orderBy: [desc(kycDocuments.uploadedAt)],
     });
   } catch (error) {
     return [];
@@ -150,8 +173,27 @@ export async function getUserBalance(userId: string) {
   }
 }
 
-export async function verifyKyc(userId: string) {
+export async function verifyKyc(userId: string, documentId?: string) {
   try {
+    // Update all pending documents for this user as verified
+    if (documentId) {
+      await db.update(kycDocuments)
+        .set({
+          status: 'verified',
+          reviewedAt: new Date(),
+          reviewedBy: 'admin'
+        })
+        .where(eq(kycDocuments.id, documentId));
+    } else {
+      await db.update(kycDocuments)
+        .set({
+          status: 'verified',
+          reviewedAt: new Date(),
+          reviewedBy: 'admin'
+        })
+        .where(eq(kycDocuments.userId, userId));
+    }
+
     await db.update(users)
       .set({ kycStatus: 'verified' })
       .where(eq(users.id, userId));
@@ -162,8 +204,29 @@ export async function verifyKyc(userId: string) {
   }
 }
 
-export async function rejectKyc(userId: string) {
+export async function rejectKyc(userId: string, rejectionReason: string, documentId?: string) {
   try {
+    // Update documents as rejected with reason
+    if (documentId) {
+      await db.update(kycDocuments)
+        .set({
+          status: 'rejected',
+          reviewedAt: new Date(),
+          reviewedBy: 'admin',
+          rejectionReason
+        })
+        .where(eq(kycDocuments.id, documentId));
+    } else {
+      await db.update(kycDocuments)
+        .set({
+          status: 'rejected',
+          reviewedAt: new Date(),
+          reviewedBy: 'admin',
+          rejectionReason
+        })
+        .where(eq(kycDocuments.userId, userId));
+    }
+
     await db.update(users)
       .set({ kycStatus: 'rejected' })
       .where(eq(users.id, userId));
@@ -183,5 +246,53 @@ export async function resolveComplaint(complaintId: string) {
   } catch (error) {
     console.error('Complaint Resolution Error:', error);
     return { error: 'Failed to resolve complaint' };
+  }
+}
+
+export async function sendAdminMessage(complaintId: string, message: string) {
+  try {
+    await db.insert(messages).values({
+      id: randomUUID(),
+      complaintId,
+      senderId: 'admin',
+      message,
+      createdAt: new Date(),
+    });
+
+    // Reopen the complaint if it was resolved
+    await db.update(complaints)
+      .set({ status: 'open' })
+      .where(eq(complaints.id, complaintId));
+
+    return { success: true };
+  } catch (error) {
+    console.error('Admin Message Error:', error);
+    return { error: 'Failed to send message' };
+  }
+}
+
+export async function getComplaintWithMessages(complaintId: string) {
+  try {
+    const complaint = await db.query.complaints.findFirst({
+      where: eq(complaints.id, complaintId),
+      with: {
+        user: true,
+      } as any,
+    });
+
+    if (!complaint) return null;
+
+    const msgs = await db.query.messages.findMany({
+      where: eq(messages.complaintId, complaintId),
+      orderBy: [desc(messages.createdAt)],
+    });
+
+    return {
+      ...complaint,
+      messages: msgs,
+    };
+  } catch (error) {
+    console.error('Error fetching complaint with messages:', error);
+    return null;
   }
 }

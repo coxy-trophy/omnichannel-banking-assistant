@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { MessageSquare, Send, ArrowLeft, Clock, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
-import { createComplaint, getUserComplaints } from './actions';
+import { createComplaint, getUserComplaints, getComplaintsWithMessages } from './actions';
 
 const CATEGORIES = [
   'Account Issue',
@@ -22,6 +22,8 @@ interface Complaint {
   message: string;
   status: string;
   createdAt: Date | string;
+  lastMessage?: string;
+  lastMessageAt?: Date | string;
 }
 
 export default function ComplaintsPage() {
@@ -40,10 +42,12 @@ export default function ComplaintsPage() {
   }, []);
 
   const loadComplaints = async () => {
-    const data = await getUserComplaints();
+    const data = await getComplaintsWithMessages();
     setComplaints(data.map((c: any) => ({
       ...c,
-      createdAt: c.createdAt instanceof Date ? c.createdAt.toISOString() : c.createdAt
+      createdAt: c.createdAt instanceof Date ? c.createdAt.toISOString() : c.createdAt,
+      lastMessage: c.lastMessage,
+      lastMessageAt: c.lastMessageAt
     })));
     setLoading(false);
   };
@@ -115,20 +119,24 @@ export default function ComplaintsPage() {
         {view === 'list' && (
           <div className="space-y-4">
             {complaints.length > 0 ? complaints.map((c) => (
-              <Card key={c.id} className="p-5 border-outline-variant/30 hover:border-primary/30 transition-colors">
-                <div className="flex justify-between items-start mb-3">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-outline">#{c.id.slice(0, 8)}</span>
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${c.status === 'open' ? 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant' : 'bg-success-mint text-on-success-mint'}`}>
-                    {c.status}
-                  </span>
-                </div>
-                <h3 className="font-bold text-on-surface mb-1">{c.category}</h3>
-                <p className="text-sm text-on-surface-variant line-clamp-2">{c.message}</p>
-                <div className="mt-3 flex items-center gap-2 text-[10px] text-outline">
-                  <Clock className="w-3 h-3" />
-                  {new Date(c.createdAt).toLocaleDateString()}
-                </div>
-              </Card>
+              <Link key={c.id} href={`/complaints/${c.id}`}>
+                <Card className="p-5 border-outline-variant/30 hover:border-primary/30 transition-colors cursor-pointer">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-outline">#{c.id.slice(0, 8)}</span>
+                    <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase ${c.status === 'open' ? 'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant' : 'bg-success-mint text-on-success-mint'}`}>
+                      {c.status}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-on-surface mb-1">{c.category}</h3>
+                  <p className="text-sm text-on-surface-variant line-clamp-2">
+                    {c.lastMessage || c.message}
+                  </p>
+                  <div className="mt-3 flex items-center gap-2 text-[10px] text-outline">
+                    <Clock className="w-3 h-3" />
+                    {new Date(c.lastMessageAt || c.createdAt).toLocaleDateString()}
+                  </div>
+                </Card>
+              </Link>
             )) : (
               <Card className="p-12 text-center border-dashed border-2 border-outline-variant/50">
                 <MessageSquare className="w-12 h-12 text-outline mx-auto mb-4" />

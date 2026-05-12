@@ -1,39 +1,118 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
-import { ShieldCheck, ArrowLeft, MessageSquare, Upload, CheckCircle2, Clock, AlertCircle, Send } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, MessageSquare, Upload, CheckCircle2, Clock, AlertCircle, Send, FileText, X, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { getKycStatus, submitKyc, contactSupport } from './actions';
 
+const DOCUMENT_TYPES = [
+  { value: 'id_front', label: 'ID Card (Front)', required: true },
+  { value: 'id_back', label: 'ID Card (Back)', required: true },
+  { value: 'profile_photo', label: 'Profile Photo', required: true },
+];
+
+interface Document {
+  id: string;
+  fileUrl: string;
+  documentType: string;
+  status: string;
+  uploadedAt: Date | string;
+  rejectionReason?: string | null;
+}
+
 export default function KycPage() {
   const [kycStatus, setKycStatus] = useState<string>('pending');
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
   const [supportMessage, setSupportMessage] = useState('');
   const [supportSent, setSupportSent] = useState(false);
 
+  // Track upload state for each document type
+  const [selectedDocType, setSelectedDocType] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState('');
+  const [activeUploadType, setActiveUploadType] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     loadStatus();
   }, []);
 
   const loadStatus = async () => {
-    const user = await getKycStatus();
-    if (user) {
-      setKycStatus(user.kycStatus);
+    const result = await getKycStatus();
+    if (result?.user) {
+      setKycStatus(result.user.kycStatus);
+      setDocuments(result.documents || []);
     }
     setLoading(false);
   };
 
-  const handleSubmitKyc = async () => {
+  const getDocumentByType = (type: string) => {
+    return documents.find(doc => doc.documentType === type);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type - only images for KYC
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        setUploadError('Only JPG or PNG image files are allowed');
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setUploadError('File size must be less than 5MB');
+        return;
+      }
+      setUploadError('');
+      setSelectedFile(file);
+      // Create preview for images
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUpload = async (docType: string) => {
+    if (!selectedFile) {
+      setUploadError('Please select a file to upload');
+      return;
+    }
+
     setSubmitting(true);
-    const result = await submitKyc();
+    const formData = new FormData();
+    formData.append('document', selectedFile);
+    formData.append('documentType', docType);
+
+    const result = await submitKyc(formData);
     if (result.success) {
-      setKycStatus('pending');
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      setActiveUploadType(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      await loadStatus();
+    } else {
+      setUploadError(result.error || 'Upload failed');
     }
     setSubmitting(false);
+  };
+
+  const startUpload = (docType: string) => {
+    setActiveUploadType(docType);
+    setSelectedDocType(docType);
+    setUploadError('');
+  };
+
+  const cancelUpload = () => {
+    setActiveUploadType(null);
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setUploadError('');
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleContactSupport = async (e: React.FormEvent) => {
@@ -58,12 +137,20 @@ export default function KycPage() {
     );
   }
 
+  const hasDocuments = documents.length > 0;
+  const allUploaded = DOCUMENT_TYPES.every(type => getDocumentByType(type.value));
+
   const statusConfig: Record<string, { icon: React.ReactNode; title: string; desc: string; color: string }> = {
-    pending: {
+    pending: hasDocuments ? {
       icon: <Clock className="w-8 h-8" />,
       title: 'Verification in Progress',
       desc: 'Your documents are being reviewed. This typically takes 24-48 hours.',
       color: 'text-tertiary bg-tertiary-fixed/30'
+    } : {
+      icon: <ShieldCheck className="w-8 h-8" />,
+      title: 'Verify Your Identity',
+      desc: 'Submit your identification documents to unlock full access to all institutional services.',
+      color: 'text-primary bg-primary/10'
     },
     verified: {
       icon: <CheckCircle2 className="w-8 h-8" />,
@@ -71,7 +158,12 @@ export default function KycPage() {
       desc: 'Your account has full access to all institutional services.',
       color: 'text-on-success-mint bg-success-mint'
     },
-    rejected: {
+    rejected: hasDocuments ? {
+      icon: <AlertCircle className="w-8 h-8" />,
+      title: 'Documents Rejected',
+      desc: 'Some of your documents were rejected. Please check the reason below and re-upload.',
+      color: 'text-error bg-error/10'
+    } : {
       icon: <AlertCircle className="w-8 h-8" />,
       title: 'Verification Required',
       desc: 'Please submit your identification documents to verify your account.',
@@ -140,6 +232,7 @@ export default function KycPage() {
           </Card>
         ) : (
           <>
+            {/* Status Card */}
             <Card className="p-8 border-outline-variant/30 shadow-lg mb-6">
               <div className="flex flex-col items-center text-center">
                 <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 ${config.color}`}>
@@ -149,17 +242,201 @@ export default function KycPage() {
                 <p className="text-on-surface-variant mb-6 font-medium max-w-md">
                   {config.desc}
                 </p>
-
-                {kycStatus === 'rejected' && (
-                  <Button onClick={handleSubmitKyc} disabled={submitting} className="gap-2">
-                    <Upload className="w-4 h-4" />
-                    {submitting ? 'Submitting...' : 'Submit Documents'}
-                  </Button>
-                )}
               </div>
             </Card>
 
-            <Card className="p-6 border-outline-variant/30 bg-surface-container-low">
+            {/* Required Documents List */}
+            <Card className="p-6 border-outline-variant/30 shadow-lg mb-6">
+              <h3 className="font-manrope font-bold text-lg mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" />
+                Required KYC Documents
+              </h3>
+              <p className="text-sm text-on-surface-variant mb-4">
+                All three documents are required to complete your identity verification.
+              </p>
+              <div className="space-y-4">
+                {DOCUMENT_TYPES.map((docType) => {
+                  const uploadedDoc = getDocumentByType(docType.value);
+                  const isActiveUpload = activeUploadType === docType.value;
+
+                  return (
+                    <div key={docType.value} className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            uploadedDoc?.status === 'verified' ? 'bg-success-mint/20' : 'bg-primary/10'
+                          }`}>
+                            <FileText className={`w-5 h-5 ${
+                              uploadedDoc?.status === 'verified' ? 'text-on-success-mint' : 'text-primary'
+                            }`} />
+                          </div>
+                          <div>
+                            <p className="font-bold text-sm">{docType.label}</p>
+                            {uploadedDoc ? (
+                              <p className="text-[10px] text-outline">
+                                Uploaded {new Date(uploadedDoc.uploadedAt).toLocaleDateString()}
+                              </p>
+                            ) : (
+                              <p className="text-[10px] text-error font-bold">Not uploaded</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {uploadedDoc ? (
+                            <>
+                              <span className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest ${
+                                uploadedDoc.status === 'verified' ? 'bg-success-mint text-on-success-mint' :
+                                uploadedDoc.status === 'rejected' ? 'bg-error/10 text-error' :
+                                'bg-tertiary-fixed/30 text-on-tertiary-fixed-variant'
+                              }`}>
+                                {uploadedDoc.status}
+                              </span>
+                              <a
+                                href={uploadedDoc.fileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 hover:bg-primary/10 rounded-lg transition-colors"
+                              >
+                                <Eye className="w-4 h-4 text-primary" />
+                              </a>
+                            </>
+                          ) : (
+                            <Button
+                              onClick={() => startUpload(docType.value)}
+                              className="text-[10px] px-3 py-1 h-auto"
+                            >
+                              Upload
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Upload form for active document */}
+                      {isActiveUpload && (
+                        <div className="mt-4 pt-4 border-t border-outline-variant/20">
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-outline ml-1">
+                                Upload {docType.label}
+                              </label>
+                              <div
+                                className="border-2 border-dashed border-outline-variant rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer bg-surface-container-lowest"
+                                onClick={() => fileInputRef.current?.click()}
+                              >
+                                <input
+                                  ref={fileInputRef}
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleFileSelect}
+                                  className="hidden"
+                                />
+                                <Upload className="w-8 h-8 text-outline mx-auto mb-2" />
+                                <p className="text-sm font-medium text-on-surface">
+                                  {selectedFile && activeUploadType === docType.value
+                                    ? selectedFile.name
+                                    : 'Click to upload'}
+                                </p>
+                                <p className="text-[10px] text-outline mt-1">
+                                  JPG or PNG (max 5MB)
+                                </p>
+                              </div>
+                            </div>
+
+                            {previewUrl && activeUploadType === docType.value && (
+                              <div className="relative">
+                                <img
+                                  src={previewUrl}
+                                  alt="Preview"
+                                  className="w-full h-48 object-cover rounded-xl border border-outline-variant/30"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={cancelUpload}
+                                  className="absolute top-2 right-2 p-2 bg-error text-white rounded-full hover:bg-error/80 transition-colors"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            )}
+
+                            {uploadError && activeUploadType === docType.value && (
+                              <div className="flex items-center gap-2 text-error bg-error/10 p-3 rounded-xl">
+                                <AlertCircle className="w-5 h-5" />
+                                <span className="font-bold text-sm">{uploadError}</span>
+                              </div>
+                            )}
+
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={cancelUpload}
+                                className="flex-1"
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                type="button"
+                                onClick={() => handleUpload(docType.value)}
+                                disabled={submitting || !selectedFile || activeUploadType !== docType.value}
+                                className="flex-1"
+                              >
+                                {submitting ? 'Uploading...' : `Upload ${docType.label}`}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Check if all documents are uploaded */}
+              {(() => {
+                const allUploaded = DOCUMENT_TYPES.every(
+                  type => getDocumentByType(type.value)
+                );
+                const allVerified = DOCUMENT_TYPES.every(
+                  type => getDocumentByType(type.value)?.status === 'verified'
+                );
+
+                if (allUploaded && kycStatus !== 'pending' && kycStatus !== 'verified') {
+                  return (
+                    <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/20">
+                      <p className="text-sm font-bold text-primary mb-1">Ready for Review</p>
+                      <p className="text-xs text-on-surface-variant">
+                        All documents have been uploaded. Your KYC is {kycStatus === 'rejected' ? 'pending re-review' : 'pending review'}.
+                      </p>
+                    </div>
+                  );
+                }
+
+                if (allVerified) {
+                  return (
+                    <div className="mt-4 p-4 rounded-xl bg-success-mint/10 border border-success-mint/20">
+                      <p className="text-sm font-bold text-on-success-mint mb-1">Verification Complete</p>
+                      <p className="text-xs text-on-success-mint">
+                        All your documents have been verified. You have full access to all services.
+                      </p>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
+              {kycStatus === 'rejected' && (
+                <div className="mt-4 p-4 rounded-xl bg-error/10 border border-error/20">
+                  <p className="text-sm font-bold text-error mb-1">Rejection Reason:</p>
+                  <p className="text-xs text-on-surface-variant">
+                    {documents.find(d => d.status === 'rejected')?.rejectionReason || 'Please re-upload the rejected documents'}
+                  </p>
+                </div>
+              )}
+            </Card>
+
+            {/* Help Card */}
+            <Card className="p-6 border-outline-variant/30 bg-surface-container-low mt-6">
               <div className="flex items-start gap-4">
                 <div className="bg-primary/10 p-3 rounded-xl">
                   <MessageSquare className="w-5 h-5 text-primary" />

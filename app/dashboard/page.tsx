@@ -185,24 +185,26 @@ export default async function UserDashboard() {
             <section>
               <h2 className="font-manrope text-xl font-bold mb-4">Upcoming Visit</h2>
               {activeBookings.length > 0 ? activeBookings.map((bk: any) => (
-                <Card key={bk.id} className="bg-surface-container-low border-primary/10 shadow-md">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary/10 p-2 rounded-lg">
-                      <Clock className="text-primary w-5 h-5" />
+                <Link key={bk.id} href={`/booking/${bk.id}`}>
+                  <Card className="bg-surface-container-low border-primary/10 shadow-md cursor-pointer hover:border-primary/30 transition-colors">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-primary/10 p-2 rounded-lg">
+                        <Clock className="text-primary w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold">{bk.service?.name}</p>
+                        <p className="text-xs text-on-surface-variant mb-2">{bk.branch?.name}</p>
+                        <p className="text-sm font-manrope font-bold text-primary">{new Date(bk.timeslot).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="font-bold">{bk.service?.name}</p>
-                      <p className="text-xs text-on-surface-variant mb-2">{bk.branch?.name}</p>
-                      <p className="text-sm font-manrope font-bold text-primary">{new Date(bk.timeslot).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
+                    <div className="mt-4 pt-4 border-t border-outline-variant/50 flex flex-col gap-2">
+                      <div className="bg-surface-container-highest/50 p-3 rounded-xl text-center border border-outline-variant">
+                         <p className="text-[10px] uppercase font-bold text-outline tracking-widest mb-1">Check-in Code</p>
+                         <p className="font-mono text-xl font-bold tracking-tighter text-primary">{bk.checkinCode}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-outline-variant/50 flex flex-col gap-2">
-                    <div className="bg-surface-container-highest/50 p-3 rounded-xl text-center border border-outline-variant">
-                       <p className="text-[10px] uppercase font-bold text-outline tracking-widest mb-1">Check-in Code</p>
-                       <p className="font-mono text-xl font-bold tracking-tighter text-primary">{bk.checkinCode}</p>
-                    </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               )) : (
                 <Card className="bg-surface-container-low text-center p-8 border-dashed border-2 border-outline-variant/50 shadow-none">
                   <p className="text-sm text-on-surface-variant italic">No appointments scheduled</p>

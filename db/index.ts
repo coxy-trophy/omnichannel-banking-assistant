@@ -54,7 +54,12 @@ sqlite.exec(`
     id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users(id),
     file_url TEXT NOT NULL,
-    status TEXT DEFAULT 'pending' NOT NULL
+    document_type TEXT NOT NULL,
+    status TEXT DEFAULT 'pending' NOT NULL,
+    uploaded_at INTEGER NOT NULL,
+    reviewed_at INTEGER,
+    reviewed_by TEXT,
+    rejection_reason TEXT
   );
 
   CREATE TABLE IF NOT EXISTS complaints (

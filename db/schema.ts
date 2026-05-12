@@ -55,7 +55,12 @@ export const kycDocuments = sqliteTable('kyc_documents', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id).notNull(),
   fileUrl: text('file_url').notNull(),
+  documentType: text('document_type').notNull(),
   status: text('status').default('pending').notNull(),
+  uploadedAt: integer('uploaded_at', { mode: 'timestamp' }).notNull(),
+  reviewedAt: integer('reviewed_at', { mode: 'timestamp' }),
+  reviewedBy: text('reviewed_by'),
+  rejectionReason: text('rejection_reason'),
 });
 
 export const complaints = sqliteTable('complaints', {
